@@ -1,0 +1,56 @@
+[user]
+	name  = tuyuri6ka
+	email = m.motoike.kra@gmail.com
+
+[alias]
+	ad = add
+[core]
+#	pager          = less
+	editor         = nvim
+	hooksPath      = ~/.git_template
+	excludesfile   = ~/.gitignore
+	attributesfile = ~/.gitattributes
+
+[color]
+	ui         = true
+	diff       = auto
+	branch     = auto
+	status     = auto
+	showbranch = auto
+
+[color "branch"]
+	local   = green
+	remote  = red
+	current = green reverse
+
+[color "diff"]
+	old  = red bold
+	new  = green bold
+	meta = yellow bold
+	frag = magenta bold
+
+[color "status"]
+	added     = green
+	changed   = red
+	untracked = red
+
+[merge]
+	ff = false
+
+[pull]
+	ff = only
+
+[commit]
+	template = ~/.git_template/commit-template
+
+[delta]
+	width                    = 160
+	line-numbers             = true
+	side-by-side             = true
+	features                 = decorations
+	hunk-header-style        = omit
+	syntax-theme             = Monokai Extended
+	whitespace-error-style   = 22 reverse
+	line-numbers-left-style  = "#3D424D"
+	line-numbers-right-style = "#3D424D"
+
