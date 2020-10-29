@@ -4,9 +4,10 @@
 
 [alias]
 	ad = add
+
 [core]
 #	pager          = less
-	editor         = nvim
+	editor         = vim
 	hooksPath      = ~/.git_template
 	excludesfile   = ~/.gitignore
 	attributesfile = ~/.gitattributes
@@ -17,6 +18,11 @@
 	branch     = auto
 	status     = auto
 	showbranch = auto
+
+[diff]
+	prompt = false
+	tool = vimdiff
+	algorithm = histogram
 
 [color "branch"]
 	local   = green
@@ -36,9 +42,16 @@
 
 [merge]
 	ff = false
+	tool = vimdiff
+
+[mergetool "vimdiff"]
+	path = vim
 
 [pull]
 	ff = only
+
+[push]
+	default = simple
 
 [commit]
 	template = ~/.git_template/commit-template
@@ -54,3 +67,5 @@
 	line-numbers-left-style  = "#3D424D"
 	line-numbers-right-style = "#3D424D"
 
+[interactive]
+	diffFilter = delta --color-only
