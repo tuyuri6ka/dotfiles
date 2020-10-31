@@ -1,7 +1,7 @@
 ## ----------------------------------------
-##	powerlevel10k setting
-##	- Must be the top of .zshrc
-##	- p10k configure
+## powerlevel10k setting
+##  - Must be the top of .zshrc
+##  - p10k configure
 ## ----------------------------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
 	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -34,7 +34,7 @@ export GIT_EDITOR="${EDITOR}"
 export SVN_EDITOR="${EDITOR}"
 
 ## ----------------------------------------
-##	Language
+## Language
 ## ----------------------------------------
 export LANGUAGE="en_US.UTF-8"
 export LANG="${LANGUAGE}"
@@ -42,28 +42,28 @@ export LC_ALL="${LANGUAGE}"
 export LC_CTYPE="${LANGUAGE}"
 
 ## ----------------------------------------
-##	Option & Function
+## Zsh config
 ## ----------------------------------------
-setopt no_beep
-setopt globdots
-setopt mark_dirs
-setopt list_packed
+setopt no_beep          # beep音を鳴らさない
+setopt globdots         # タブキーで自動的に補完
+setopt mark_dirs        # ファイル名の展開でディレクトリにマッチした場合末尾に/を付加する
+setopt list_packed      # 補完候補を詰めて表示
 setopt no_flow_control
 setopt auto_param_keys
-setopt auto_pushd
+setopt auto_pushd       # 普通のcdでもスタックに入れる
 autoload -Uz colors && colors
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 
 ## ----------------------------------------
-##	Completion
+## Completion
 ## ----------------------------------------
-setopt auto_list
-setopt auto_menu
-setopt share_history
-setopt auto_param_slash
+setopt auto_list         # 曖昧な補完で自動的に選択肢をリストアップ
+setopt auto_menu         # タブキーで自動的に保管
+setopt share_history     # ヒストリーを共有
+setopt auto_param_slash  # ディレクトリを補完すると自動的に末尾にスラッシュになる
 setopt magic_equal_subst
-export HISTSIZE=100
+export HISTSIZE=100      # ヒストリーサイズ設定
 export SAVEHIST=10000
 export HISTFILE=${HOME}/.zsh_history
 export FPATH="${HOME}/.zsh/completion:${FPATH}"
@@ -73,7 +73,7 @@ zstyle ':completion:*:default' list-colors ${LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}'
 
 ## ----------------------------------------
-##	Keymap
+## Keymap
 ## ----------------------------------------
 bindkey '^F' forward-word
 bindkey '^B' backward-word
@@ -85,10 +85,10 @@ bindkey "^[[A" up-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
 
 ## ----------------------------------------
-##	Alias & Function
-##	- ~/.aliases/**.zsh has more aliases which not often used.
+## Alias & Function
+##  - ~/.aliases/**.zsh has more aliases which not often used.
 ## ----------------------------------------
-alias vi='nvim'
+alias vi='vim'
 alias vimvim='vim ~/.vimrc'
 alias cdh='cd ~'
 alias hf='hyperfine --max-runs 3'
@@ -97,17 +97,18 @@ alias virc='vi ~/.zshrc' sorc='source ~/.zshrc'
 alias op='open ./'
 alias pp='pbpaste >'
 alias cdwk='cd ~/work'
+
+# 外部ツール
 alias opg='hub browse'
 alias opis='hub issue show `hub issue | fzf`'
 alias oppr='hub pr show `hub pr list | fzf`'
 alias copr='hub pr checkout `hub pr list | fzf`'
-
+alias rg='rg --hidden -g "!.git" -g "!node_modules" --max-columns 200' rgi='rg -i'
 alias bat='bat --color=always --style=header,grid'
 alias dus='dust -pr -d 2 -X ".git" -X "node_modules"'
 alias python='/usr/local/bin/python3.8' py='python' pip='/usr/local/bin/pip3'
 alias psa='ps aux' pskl='psa | fzf | awk "{ print \$2 }" | xargs kill -9'
 alias fd='fd -iH --no-ignore-vcs -E ".git|node_modules"' rmds='fd .DS_Store -X rm'
-alias rg='rg --hidden -g "!.git" -g "!node_modules" --max-columns 200' rgi='rg -i'
 alias ll='exa -alhF --git-ignore --group-directories-first --time-style=long-iso --ignore-glob=".git|node_modules"' 
 alias tr2='ll -T -L=2'
 alias tr3='ll -T -L=3'
@@ -160,14 +161,25 @@ alias dflg='delta ~/work/temp/a.log ~/work/temp/b.log'
 ## ========== Suffix Alias ==========
 alias -s {png,jpg,jpeg}='imgcat'
 alias -s {html,mp3,mp4,mov}='open'
-alias -s {applescript}='osascript'
 
 ## ========== Git ==========
-## - ~/.gitconfig has most of git aliases.
 alias g='git' && compdef _git g
 alias cdgh='cd `ghq list -p | fzf`'
 alias cdg='cd `git rev-parse --show-toplevel`'
-gcre() {
+function tmrn() {
+	selected=`tmux list-sessions | fzf | cut -d : -f 1`
+	read newname"?type new session name: ";
+	tmux rename-session -t "${selected}" "${newname}";
+}
+function tma() {
+	selected=`tmux list-sessions | fzf | cut -d : -f 1`
+	if [ -z "{TMUX{" ]; then
+		tmux attach -t "${selected}"
+	else
+		tmux switch -t "${selected}"
+	fi
+}
+function gcre() {
 	[ -z "$(ls -A ./)" ] && echo "Fail: Directory is empty." && return 0;
 	git init && git add -A && git commit;
 	read        name"?type repo name        : ";
@@ -177,41 +189,13 @@ gcre() {
 	hub browse;
 }
 
-## Suffix Alias
-alias -s {png,jpg,jpeg}='imgcat'
-
-## Git
-alias g='giy' && compdef _git g
-alias cdg='cd `git rev-parse --show-toplevel`'
-
-## ========== Tmux ==========
-alias tm='tmux' && compdef _tmux tm
-alias tmn='tm attach -t main || tmux new -s main'
-alias tmkl='tmux list-sessions | fzf -m | cut -d: -f 1 | xargs -I{} tmux kill-session -t {}'
-tmrn() {
-	selected=`tmux list-sessions | fzf | cut -d : -f 1`
-	read newname"?type new session name: ";
-	tmux rename-session -t "${selected}" "${newname}"
-}
-tma() {
-	selected=`tmux list-sessions | fzf | cut -d : -f 1`
-	if [ -z "${TMUX}" ]; then
-		tmux attach -t "${selected}"
-	else
-		tmux switch -t "${selected}"
-	fi
-}
-
 ## ========== Neovim ==========
-alias vivi='vi ~/.config/nvim/init.vim'
-vii() {
-	nvim -c ":call Wal()" $@;
+alias vivi='vi ~/.vimrc'
+function vii() {
+	FORMAT=`nkf --guess $@;
+	vi -c "'e ++enc=${FORMAT}" $@;
 }
-vink() {
-	FORMAT=`nkf -g $@`;
-	nvim -c ":e ++enc=${FORMAT}" $@;
-}
-vigo() {
+function vigo() {
 	vi -c "call append(0, v:oldfiles)" -c "write! ~/.config/nvim/viminfo.log" -c exit;
 	vi `cat ~/.config/nvim/viminfo.log | fzf --preview 'bat --color=always {}'`;
 }
@@ -252,8 +236,8 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 	print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
 	command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
 	command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-		print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-		print -P "%F{160}▓▒░ The clone has failed.%f%b"
+	print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+	print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
 # Zinit setting and install plugins
