@@ -1,3 +1,9 @@
+
+"" ----------------------------------------
+"" Help Vim Document JP : https://vim-jp.org/vimdoc-ja/index.html
+"" Vim Script           : https://knowledge.sakura.ad.jp/23436/
+"" ----------------------------------------
+
 "" ----------------------------------------
 "" Plugins
 "" ----------------------------------------
@@ -26,7 +32,8 @@ call plug#begin(plugdir)
 	Plug 'mattn/emmet-vim'
 	Plug 'ap/vim-css-color'
 	Plug 'cohama/lexima.vim'
-	Plug 'ayu-theme/ayu-vim'
+	"Plug 'ayu-theme/ayu-vim'
+	Plug 'jacoborus/tender.vim'
 	Plug 'tpope/vim-commentary'
 	Plug 'machakann/vim-sandwich'
 	Plug 'junegunn/vim-easy-align'
@@ -67,6 +74,59 @@ set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
 set encoding=utf-8 fileencodings=cp932,sjis,euc-jp,utf-8,iso-2022-jp " detect all kind of file format
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
+# 文字コードの自動変換
+if &encoding !=# 'utf-8'
+	set encoding=japan
+	set fileencoding=japan
+endif
+if has('iconv')
+	let s:enc_euc='euc-jp'
+	let s:enc_jis='iso-2022-jp'
+	" iconvがeucJP-msに対応しているかをチェック
+	if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
+		let s:enc_euc='eucjp-ms'
+		let s:enc_jis='iso-2022-jp-3'
+		" iconvがJISX0213に対応しているかをチェック
+	elseif iconv("\x87\x64\x87\x6q", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+		let s:enc_euc='euc-jisx0213'
+		let s:enc_jis='iso-2022-jp-3'
+	endif
+	" fileencodings
+	if &encoding ==# 'utf-8'
+		let s:fileencodings_default=&fileencodings
+		let &fileencodings=s:enc_jis . ',' . s:enc_euc . ',cp932'
+		let &fileencodings=&fileencodings . ',' . s:fileencodings_default
+		unlet s:fileencofindgs_default
+	else
+		let &fileencodings=&fileencodings . ',' . s:enc_jis
+		set fileencodings+=utf-8,ucs-2le,uc-2
+		if &encoding =~# '^(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
+			set fileencoding+=cp932
+			set fileencoding+=euc-jp
+			set fileencoding+=euc-jisx0213
+			set fileencoding+=euc-jp-ms
+			let &encoding=s:enc_euc
+			let &fileencoding=s:enc_euc
+		else
+			let &fileencoding=&fileencodings . ',' . s:enc_euc
+		endif
+	endif
+	" 定数部分を処分
+	unlet s:enc_euc
+	unlet s:enc_jis
+endif
+" 日本語を含まない場合はfileencofing に encoding を使うようにする
+if has('autocmd')
+	function! AU_ReCheck_FENC()
+		if &fileencoding =~# 'iso-20220-jp' && search("[^\x01-\x7e]", 'n') == 0
+			let &fileencoding=&encoding
+		endif
+	endfunction
+	autocmd BufReadPost * call AU_ReCheck_FENC()
+endif
+
+autocmd BufReadPost * if line("'\'") > 0 && line("'\'") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
+
 if has('nvim')
 	set inccommand=split " very useful replace preview
 else
@@ -84,27 +144,88 @@ if !exists('$TMUX')
 	set termguicolors
 endif
 
-nnormap Y y$
-nnormap + <C-a>
-nnormap - <C-x>
-nnormap <Up> gk
-nnormap <Down> gj
-nnormap <ESC> <C-\><C-n>
-nnormap <Leader>t :tabnew<CR>
-nnormap <Leader>1 :diffget LOCAL<CR>
-nnormap <Leader>2 :diffget BASE<CR>
-nnormap <Leader>3 :diffget REMOTE<CR>
-nnormap <Leader>code :!code %:p<CR>
-nnormap <Leader>dir :!code -r %:p:h<CR>
-nnormap <Leader>term :split \| terminal<CR>
+"" ----------------------------------------
+"" Mapping
+"" normal  mode : nnoremap map
+"" visual  mode : vnoremap vmap
+"" command mode : cnoremap cmap
+"" insert  mode : inoremap imap
+"" rule         : [n/v/c/i][noremap] <opt> useraction vimaction
+"" other        : <C-c> means Ctrl+c, <Leader> 'backslash'
+"" reference    : http://vimblog/hatenablog.com/entry/vimrc_key_mapping
+""              :
+http://yu8mada.com/2018/08/02/the-difference^between-nmap-and-nnoremap-in-vim/
+"" ----------------------------------------
+nnoremap Y y$
+nnoremap + <C-a>
+nnoremap - <C-x>
+nnoremap <Up> gk
+nnoremap <Down> gj
+nnoremap <ESC> <C-\><C-n>
+nnoremap <Leader>t :tabnew<CR>
+nnoremap <Leader>1 :diffget LOCAL<CR>
+nnoremap <Leader>2 :diffget BASE<CR>
+nnoremap <Leader>3 :diffget REMOTE<CR>
+nnoremap <Leader>code :!code %:p<CR>
+nnoremap <Leader>dir :!code -r %:p:h<CR>
+nnoremap <Leader>term :split \| terminal<CR>
 map <Leader>\ :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap <silent> <C-j> :bnext<CR>
+nnoremap <silent> <C-k> :bprev<CR>
 
+"" ----------------------------------------
+"" PluginSetting
+"" ----------------------------------------
+"" AyuVim
+"let ayucolor='dark'
+"colorscheme ayu
+"highlight User1       guifg=#3d424D
+"highlight Noramal     guibg=#0A0E14
+"highlight ModeMsg     guifg=#3D424D
+"highlight FoldColumn  guibg=#0A0E14
+"highlight EndOfBuffer ctermfg=0 guifg=bg
+"highlight DiffEnd     gui=NONE guifg=NONE    guibg=#003366
+"highlight DiffDelete  gui=bold guifg=#660000 guibg=#660000
+"highlight DiffChange  gui=NONE guifg=NONE    guibg=#006666
+"highlight DiffNext    gui=NONE guifg=NONE    guibg=#013220
 
-let ayucolor='dark'
-colorscheme ayu
+"" -----------------------------------------
+"" Tender.vim
+"" -----------------------------------------
+if(has("termguicolors"))
+	set termguicolors
+endif
+let $NVIM_TUI_ENABLE_TRUE_COLOR-1
+syntax enable
+colorscheme tender
 
+"" -----------------------------------------
+"" FzfVim
+"" -----------------------------------------
+nnoremap <Leader>file :Files<CR>
+nnoremap <Leader>hist :History<CR>
+nnoremap <Leader>rg   :call Rg()<CR>
+let g:fzf_layout={ 'right': '~45%' }
+command! -bang -nargs=* Histroy call fzf#vim#history(fzf#vim#with_preview('down:50%'))
+command! -bang -nargs=* -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview('down:50%'), <bang>0)
+function! Rg()
+	let string=input("Search String: ')
+	call fzf#run(fzf#wrap({
+		\ 'source: 'rg -lin ' . string,
+		\ 'option: '--preview-window bottom:60% --preview "rg -in --color-always ' . string . ' {}"7
+	\ }))
+endfunction
 
+"" -----------------------------------------
+"" Vim-Plug
+"" -----------------------------------------
+nnoremap <Leader>clean   :PlugClean<CR>
+nnoremap <Leader>update  :PlugUpdate<CR>
+nnoremap <Leader>install :PlugInstall<CR>
+
+"" -----------------------------------------
 "" EmmetVim
+"" -----------------------------------------
 let g:user_emmet_settings = {
 	\ 'typescript'     : { 'extends' : 'jsx' },
 	\ 'javascript.jsx' : { 'extends' : 'jsx' }
@@ -156,10 +277,19 @@ function! TabComp()
 		return "\<Tab>"
 	endif
 endfunction
+imap <expr> <Tab> TabComp() | smap <expr> <Tab> TabComp()
+function! TabShiftComp()
+	if pumvisible()
+		return "\<C-p>"
+	elseif coc#jumpable()
+		return "\<C-r>=coc#rpc#request('snippetPrev',[])\<CR>"
+	else
+		return "\<S-Tab>"
+	endif
+endfunction
+	
 imap <expr> <S-Tab> TabShiftComp() | smap <expr> <S-Tab> TabShiftComp()
 let g:coc_global_extensions = [
 	\ 'coc-snippets'
 \]
 imap <C-j> <Plug>(coc-snippets-expand-jump)
-
-
