@@ -125,21 +125,12 @@ function rgf()  {
 	[ -z "${selected}" ] && echo "fzf Canceled." && return 0;
 	vi "${selected}";
 }
-function cap()  { cat "$1" | pbcopy }
+function cap()  { cat "$1" | pbcopy; }
 function fdsd() { fd "$1" | xargs sd "$2" "$3"; }
 function rgr()  { rg --files-with-matches "$1" | xargs sd "$1" "$2"; }
 function cmpr() { ffmpeg -i "$1" -vcodec h264 -acodec mp2 output.mp4; }
 function absp() { echo $(cd $(dirname "$0") && pwd -P)/$(basename "$1"); }
 function tz()   { tar -zcvf ${1}.tar.gz ${1}; }
-function tunz() {
-	case $1 in
-	*.zip)     unzip    $1 ;;
-	*.tgz)     tar xvzf $1 ;;
-	*.tbz2)    tar xvjf $1 ;;
-	*.tar)     tar xvzf $1 ;;
-	*.tar)     tar xvzf $1 ;;
-	*)         echo "Unable to extract '$1'" ;;
-}
 
 ## ========== Global Alias ==========
 alias -g G='| grep'
@@ -153,10 +144,6 @@ alias -g AT='| as-tree'
 alias -g TA='> ~/work/temp/a.log'
 alias -g TB='> ~/work/temp/b.log'
 alias dflg='delta ~/work/temp/a.log ~/work/temp/b.log'
-
-## ========== Suffix Alias ==========
-alias -s {png,jpg,jpeg}='imgcat'
-alias -s {html,mp3,mp4,mov}='open'
 
 ## ========== Git ==========
 alias g='git' && compdef _git g
@@ -188,7 +175,7 @@ function gcre() {
 ## ========== Neovim ==========
 alias vivi='vi ~/.vimrc'
 function vii() {
-	FORMAT=`nkf --guess $@;
+	FORMAT=`nkf --guess $@`;
 	vi -c "'e ++enc=${FORMAT}" $@;
 }
 function vigo() {
@@ -196,7 +183,7 @@ function vigo() {
 	vi `cat ~/.config/nvim/viminfo.log | fzf --preview 'bat --color=always {}'`;
 }
 
-## ========== Aliases && Snippets ==========
+### ========== Aliases && Snippets ==========
 [ -f ~/.secret_alias ] && source ~/.secret_alias
 alias sotm='wal -i `ls -d ~/.pywal/* | fzf`'
 alias visn='vi     `ls -d ~/.vsnip/*   | fzf --preview "bat --color=always {}"`'
@@ -245,9 +232,9 @@ zinit lucid for \
 	zsh-users/zsh-completions \
 	zsh-users/zsh-autosuggestions \
 	zsh-users/zsh-syntax-highlighting \
-	as'completion' is-snippet 'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \'
-	as'completion' is-snippet 'https://github.com/docker/machine/blob/master/contrib/completion/zsh/_docker-machine' \'
-	as'completion' is-snippet 'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \'
+	as'completion' is-snippet 'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
+	as'completion' is-snippet 'https://github.com/docker/machine/blob/master/contrib/completion/zsh/_docker-machine' \
+	as'completion' is-snippet 'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
 
 ## ----------------------------------------
 ##	Prompt
