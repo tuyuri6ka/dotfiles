@@ -2,8 +2,8 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-export HOME=/home/game/users/masaki.motoike
-export PATH=$HOME/users/nasaki.motoike/.cargo/bin:$PATH
+export HOME=/home/motoike
+export PATH=$HOME/.cargo/bin:$PATH
 
 zsh
 

@@ -1,4 +1,3 @@
-
 "" ----------------------------------------
 "" Help Vim Document JP : https://vim-jp.org/vimdoc-ja/index.html
 "" Vim Script           : https://knowledge.sakura.ad.jp/23436/
@@ -9,12 +8,15 @@
 "" ----------------------------------------
 "" Install vim-plug if not installed
 "" Make Directory for vim-plug
-if empty(glob('~/.vim\autoload/plug.vim'))
+let s:vimdir   = has('nvim') ? '~/.config/nvim/' : '~/.vim'
+let s:plugdir  = s:vimdir . 'plugged'
+let s:plugfile = s:vimdir . 'autoload/plug.vim'
+let s:plugurl  = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+if empty(glob(s:plugfile))
 	silent !echo '[Downloading vim-plug]...'
-	silent !mkdir -p ~/.vim/autoload
+	silent execute '!mkdir -p ' . s:vimdir . 'autoload' 
 	"" Install vim-plug by curl or wget command
-	let s:plugfile = '~/.vim/autoload/plug.vim'
-	let s:plugurl  = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 	if executable('curl')
 		silent execute '!curl -sLo ' . s:plugfile ' ' . s:plugurl
 	elseif executable('wget')
@@ -27,8 +29,7 @@ if empty(glob('~/.vim\autoload/plug.vim'))
 endif
 
 "" Install plugins
-let plugdir=has('nvim') ? '~/.config/nvim/plugged/' : '~/.vim/plugged'
-call plug#begin(plugdir)
+call plug#begin(s:plugdir)
 	Plug 'mattn/emmet-vim'
 	Plug 'ap/vim-css-color'
 	Plug 'cohama/lexima.vim'
@@ -72,6 +73,22 @@ set hidden nobackup noswapfile " do not create swap file
 set smartcase ignorecase wildignorecase " search in smart way
 set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
 set encoding=utf-8 fileencodings=cp932,sjis,euc-jp,utf-8,iso-2022-jp " detect all kind of file format
+
+# nvimとvimで設定を変える
+if has('nvim')
+	set inccommand=split " very useful replace preview
+else
+	syntax on " make syntax visible
+	set ttyfast " scroll fast
+	set autoread " if file changed outside vim. it alerms to reload or not
+	set wildmenu " menu completion
+	set belloff=all " cut down bell
+	set ruler showcmd " show status
+	set hlsearch incsearch " search in smart way
+	filetype plugin indent on
+	set backspace=indent,eol,start " you can delete by backspace
+endif
+
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
 # 文字コードの自動変換
@@ -127,19 +144,6 @@ endif
 
 autocmd BufReadPost * if line("'\'") > 0 && line("'\'") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
-if has('nvim')
-	set inccommand=split " very useful replace preview
-else
-	syntax on " make syntax visible
-	set ttyfast " scroll fast
-	set autoread " if file changed outside vim. it alerms to reload or not
-	set wildmenu " menu completion
-	set belloff=all " cut down bell
-	set ruler showcmd " show status
-	set hlsearch incsearch " search in smart way
-	filetype plugin indent on
-	set backspace=indent,eol,start " you can delete by backspace
-endif
 if !exists('$TMUX')
 	set termguicolors
 endif
@@ -153,8 +157,7 @@ endif
 "" rule         : [n/v/c/i][noremap] <opt> useraction vimaction
 "" other        : <C-c> means Ctrl+c, <Leader> 'backslash'
 "" reference    : http://vimblog/hatenablog.com/entry/vimrc_key_mapping
-""              :
-http://yu8mada.com/2018/08/02/the-difference^between-nmap-and-nnoremap-in-vim/
+""              : http://yu8mada.com/2018/08/02/the-difference^between-nmap-and-nnoremap-in-vim/
 "" ----------------------------------------
 nnoremap Y y$
 nnoremap + <C-a>
@@ -176,6 +179,8 @@ nnoremap <silent> <C-k> :bprev<CR>
 "" ----------------------------------------
 "" PluginSetting
 "" ----------------------------------------
+
+"" ColorTheme --------------------
 "" AyuVim
 "let ayucolor='dark'
 "colorscheme ayu
@@ -189,9 +194,7 @@ nnoremap <silent> <C-k> :bprev<CR>
 "highlight DiffChange  gui=NONE guifg=NONE    guibg=#006666
 "highlight DiffNext    gui=NONE guifg=NONE    guibg=#013220
 
-"" -----------------------------------------
 "" Tender.vim
-"" -----------------------------------------
 if(has("termguicolors"))
 	set termguicolors
 endif
@@ -231,16 +234,22 @@ let g:user_emmet_settings = {
 	\ 'javascript.jsx' : { 'extends' : 'jsx' }
 \ }
 
+"" -----------------------------------------
 "" EasyAlign
+"" -----------------------------------------
 xmap ga <Plug>(LiveEasyAlign)
 nmap ga <Plug>(LiveEasyAlign)
 
+"" -----------------------------------------
 "" EasyMotion
+"" -----------------------------------------
 let g:EasyMotion_do_mapping=0
 let g:EasyMotion_enter_jump_first=1
 map <Leader>s <Plug>(easymotion-sn)
 
+"" -----------------------------------------
 "" VimFugitive
+"" -----------------------------------------
 nnoremap <Leader>gd  :Gdiff<CR>
 nnoremap <Leader>ga  :Gwrite<CR>
 nnoremap <Leader>gb  :Gblame<CR>
@@ -251,7 +260,9 @@ nnoremap <Leader>dgl  :diffget //2 \| diffupdate<CR>
 nnoremap <Leader>dgr  :diffget //3 \| diffupdate<CR>
 set diffopt+=vertical
 
+"" -----------------------------------------
 "" ConflictMarker
+"" -----------------------------------------
 let g:conflict_marker_begin = '<<<<<<< .*$'
 let g:conflict_marker_end   = '>>>>>>> .*$'
 highlight ConflictMarkerBegin  guibg=#2f7366
@@ -260,10 +271,14 @@ highlight ConflictMarkerCommonAncestorsHunk guibg=#754a81
 highlight ConflictMarkerTheirs guibg=#344f69
 highlight ConflictMarkerEND    guibg=#2f628e
 
+"" -----------------------------------------
 " VimTrailingWhiteSpace
+"" -----------------------------------------
 nnoremap <Leader>trim :FixWhiteSpace<CR>
 
+"" -----------------------------------------
 "" Coc.nvim
+"" -----------------------------------------
 let g:coc_config_home = "~"
 let g:coc_node_path = '/home/game/.nvm/versions/node/v10.22.1/bin/node'
 inoremap <expr> <UP> pumvisible() ? '<C-e><UP>' : '<UP>'
