@@ -46,7 +46,7 @@ call plug#begin(s:plugdir)
 	Plug 'tpope/vim-fugitive' | Plug 'rhysd/conflict-marker.vim'
 	let g:polyglot_disabled = ['csv'] | Plug 'sheerun/vim-polyglot'
 	Plug 'neoclide/coc.vim', {'do': 'yarn install --frozen-lockfile'}
-	Plug 'junegunn/fzf.vim' | Plug 'junegunn/fzf', {'dir', '~/.fzf', 'do', './install --all'}
+	Plug 'junegunn/fzf.vim' | Plug 'junegunn/fzf', {'do': { -> fzf#install() }}
 call plug#end()
 
 
@@ -74,7 +74,7 @@ set smartcase ignorecase wildignorecase " search in smart way
 set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
 set encoding=utf-8 fileencodings=cp932,sjis,euc-jp,utf-8,iso-2022-jp " detect all kind of file format
 
-# nvimとvimで設定を変える
+" nvimとvimで設定を変える
 if has('nvim')
 	set inccommand=split " very useful replace preview
 else
@@ -91,7 +91,7 @@ endif
 
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
-# 文字コードの自動変換
+" 文字コードの自動変換
 if &encoding !=# 'utf-8'
 	set encoding=japan
 	set fileencoding=japan
@@ -113,7 +113,7 @@ if has('iconv')
 		let s:fileencodings_default=&fileencodings
 		let &fileencodings=s:enc_jis . ',' . s:enc_euc . ',cp932'
 		let &fileencodings=&fileencodings . ',' . s:fileencodings_default
-		unlet s:fileencofindgs_default
+		unlet s:fileencodings_default
 	else
 		let &fileencodings=&fileencodings . ',' . s:enc_jis
 		set fileencodings+=utf-8,ucs-2le,uc-2
@@ -198,7 +198,7 @@ nnoremap <silent> <C-k> :bprev<CR>
 if(has("termguicolors"))
 	set termguicolors
 endif
-let $NVIM_TUI_ENABLE_TRUE_COLOR-1
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 syntax enable
 colorscheme tender
 
