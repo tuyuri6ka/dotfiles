@@ -96,9 +96,9 @@ dotfiles_download () {
 	e_done "Download finished"
 }
 
-dotfiles_deploy () {
+dotfiles_symlink () {
 	e_newline
-	e_header "Deploying dotfiles..."
+	e_header "Make symbolic link for dotfiles..."
 
 	if [ ! -d "$DOTPATH" ]; then
 		e_error "$DOTPATH: not found"
@@ -107,40 +107,43 @@ dotfiles_deploy () {
 
 	cd "$DOTPATH"
 
-	make deploy && e_done "Deploy"
+	make deploy && e_done "Make symbolic link for dotfiles"
 }
 
-dotfiles_initialize () {
+setup_env () {
 	e_newline
-	e_header "Initializing dotfiles..."
+	e_header "Setup environment..."
 
-	if [ "$1" = "--init" ]; then
-		if [ -f Makefile ]; then
-			make init
-		else
-			e_error "Makefile: not found"
-			exit 1
-		fi
-		e_newline && e_done "Initialize"
+	if [ -f Makefile ]; then
+		make init
 	else
-		e_warning "if you also want to initilaize, please set option --init"
-		e_newline && e_done "Initilize skip"
+		e_error "Makefile: not found"
+		exit 1
 	fi
+	e_newline && e_done "Initialize"
 }
 
-# Script for the file named "install"
-dotfiles_install() {
-	# Download the repository
-	# ==> downloading
-	dotfiles_download &&
+install_bundles() {
+	e_newline
+	e_header "Install bundles..."
 
-	# Deploy dotfiles to your home direcotry
-	# ==> deploying
-	dotfiles_deploy &&
+	CWD=$DOTPATH/bundle
+	if [ ! -d "$CWD" ]; then
+		e_error "$CWD: not found"
+	fi
 
-	# Execute all sh files within etc/init/
-	# ==> initialize
-	dotfiles_initialize "$@"
+	cd $CWD
+	ls $CWD | grep sh | xargs /bin/bash
+
+	e_newline && e_done "Install bundles"
+}
+
+dotfiles_clean () {
+	e_newline
+	e_header "Dotfiles symbolic link delete..."
+
+	e_newline && e_done "Dotfiles symbolic link delete"
+
 }
 
 usage() {
@@ -152,7 +155,12 @@ usage() {
 
   Options for install.sh
   =================================================
-  --init: Execute all sh files within`etc/init/`
+   --download: Download git repository and make ~/.dotfiles dir
+   --dotfiles: Make symbolic link from ~/.dotfiles to your home dir
+   --setup_env: Core Initilaization
+   --bundles: Install bundles for various usefull tools
+   --clean: Remove dotfiles symbolic link
+   --all: All installations (except init)"
 	'
 	echo "${dotfiles_logo}"
 	echo "${help}"
@@ -176,6 +184,30 @@ if [[ $Ans != 'Y' ]]; then
 fi
 
 echo "$dotfiles_logo"
-dotfiles_install "$@"
+
+for opt in ${args[@]}; do
+	case $opt in
+		--download) dotfiles_download ;;
+		--dotfiles) dotfiles_symlink ;;
+		--setup_env) setup_env ;;
+		--bundles) install_bundles ;;
+		--clean) dotfiles_clean ;;
+		--all)
+			# Download the repository
+			# ==> downloading
+			dotfiles_download &&
+			# Make dotfiles symlink to your home direcotry
+			# ==> deploying
+			dotfiles_symlink &&
+			# Basic tool install and setting
+			# ==> setup enviroment
+			setup_env &&
+			# Execute all sh files within bundles
+			# ==> install usefull tools
+			install_bundles
+			;;
+		*) e_error "invalid option $1" ;;
+	esac
+done;
 
 # __END__
