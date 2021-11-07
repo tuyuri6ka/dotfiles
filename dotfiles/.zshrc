@@ -28,7 +28,8 @@ export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46
 ## ----------------------------------------
 ##	Editor
 ## ----------------------------------------
-export EDITOR=nvim
+export EDITOR=vim
+#export EDITOR=nvim
 export CVSEDITOR="${EDITOR}"
 export GIT_EDITOR="${EDITOR}"
 export SVN_EDITOR="${EDITOR}"
@@ -91,28 +92,17 @@ bindkey "^[[B" down-line-or-beginning-search
 alias vi='nvim'
 alias hf='hyperfine --max-runs 3'
 alias weather='curl -Acurl wttr.in/Tokyo'
-alias op='open ./'
-alias pp='pbpaste >'
 
 # 外部ツール
-alias opg='hub browse'
-alias opis='hub issue show `hub issue | fzf`'
-alias oppr='hub pr show `hub pr list | fzf`'
-alias copr='hub pr checkout `hub pr list | fzf`'
 alias rg='rg --hidden -g "!.git" -g "!node_modules" --max-columns 200' rgi='rg -i'
 alias bat='bat --color=always --style=header,grid'
 alias dus='dust -pr -d 2 -X ".git" -X "node_modules"'
-alias python='/usr/local/bin/python3.8' py='python' pip='/usr/local/bin/pip3'
 alias psa='ps aux' pskl='psa | fzf | awk "{ print \$2 }" | xargs kill -9'
 alias fd='fd -iH --no-ignore-vcs -E ".git|node_modules"' rmds='fd .DS_Store -X rm'
 alias ll='exa -alhF --git-ignore --group-directories-first --time-style=long-iso --ignore-glob=".git|node_modules"' 
 alias tr2='ll -T -L=2'
 alias tr3='ll -T -L=3'
 
-function vv() {
-	[ -z "$1" ] && code -r ./ && return 0;
-	code -r "$1";
-}
 function lnsv() { # enhancement of ln
 	[ -z "$2" ] && echo "Specify Target" && return 0;
 	abspath=$(absp $1);
@@ -125,10 +115,8 @@ function rgf()  {
 	[ -z "${selected}" ] && echo "fzf Canceled." && return 0;
 	vi "${selected}";
 }
-function cap()  { cat "$1" | pbcopy; }
 function fdsd() { fd "$1" | xargs sd "$2" "$3"; }
 function rgr()  { rg --files-with-matches "$1" | xargs sd "$1" "$2"; }
-function cmpr() { ffmpeg -i "$1" -vcodec h264 -acodec mp2 output.mp4; }
 function absp() { echo $(cd $(dirname "$0") && pwd -P)/$(basename "$1"); }
 function tz()   { tar -zcvf ${1}.tar.gz ${1}; }
 
@@ -139,29 +127,11 @@ alias -g T='| tail'
 alias -g X='| xargs'
 alias -g C='| wc -l'
 alias -g L='| less S'
-alias -g CP='| pbcopy'
-alias -g AT='| as-tree'
-alias -g TA='> ~/work/temp/a.log'
-alias -g TB='> ~/work/temp/b.log'
-alias dflg='delta ~/work/temp/a.log ~/work/temp/b.log'
 
 ## ========== Git ==========
 alias g='git' && compdef _git g
 alias cdgh='cd `ghq list -p | fzf`'
 alias cdg='cd `git rev-parse --show-toplevel`'
-function tmrn() {
-	selected=`tmux list-sessions | fzf | cut -d : -f 1`
-	read newname"?type new session name: ";
-	tmux rename-session -t "${selected}" "${newname}";
-}
-function tma() {
-	selected=`tmux list-sessions | fzf | cut -d : -f 1`
-	if [ -z "{TMUX{" ]; then
-		tmux attach -t "${selected}"
-	else
-		tmux switch -t "${selected}"
-	fi
-}
 function gcre() {
 	[ -z "$(ls -A ./)" ] && echo "Fail: Directory is empty." && return 0;
 	git init && git add -A && git commit;
@@ -209,32 +179,48 @@ fi
 ##	Gcloud
 ## ----------------------------------------
 [ -f '${HOME}/google-cloud-sdk/path.zsh.inc' ] && source '${HOME}/google-cloud-sdk/path.zsh.inc'
-[ -f '${HOME}/google-cloud-sdk/completion.zsh.inc' ] && source '${HOME}/google-cloud-sdk/completion.zsh.inc'
+[ -f '${HOME}\%/google-cloud-sdk/completion.zsh.inc' ] && source '${HOME}:>/google-cloud-sdk/completion.zsh.inc'
+
+
+## ----------------------------------------
+##	ZPlug
+## ----------------------------------------
+source ~/.zplug/init.zsh
+
+zplug "b4b4r07/enhancd"
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
 
 ## ----------------------------------------
 ##	Zinit
 ## ----------------------------------------
 ## Install Zinit if not installed
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-	print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
-	command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-	command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-	print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-	print -P "%F{160}▓▒░ The clone has failed.%f%b"
-fi
-
+#if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+#	print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+#	command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+#	command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+#	print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+#	print -P "%F{160}▓▒░ The clone has failed.%f%b"
+#fi
+#
 # Zinit setting and install plugins
-source "$HOME/.zinit/bin/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-zinit lucid for \
-	b4b4r07/enhancd \
-	zsh-users/zsh-completions \
-	zsh-users/zsh-autosuggestions \
-	zsh-users/zsh-syntax-highlighting \
-	as'completion' is-snippet 'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
-	as'completion' is-snippet 'https://github.com/docker/machine/blob/master/contrib/completion/zsh/_docker-machine' \
-	as'completion' is-snippet 'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
+#source "$HOME/.zinit/bin/zinit.zsh"
+#autoload -Uz _zinit
+#(( ${+_comps} )) && _comps[zinit]=_zinit
+#zinit lucid for \
+#	zsh-users/zsh-completions \
+#	zsh-users/zsh-autosuggestions \
+#	zsh-users/zsh-syntax-highlighting \
+#	as'completion' is-snippet 'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
+#	as'completion' is-snippet 'https://github.com/docker/machine/blob/master/contrib/completion/zsh/_docker-machine' \
+#	as'completion' is-snippet 'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
 
 ## ----------------------------------------
 ##	Prompt
