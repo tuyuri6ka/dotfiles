@@ -183,44 +183,19 @@ fi
 
 
 ## ----------------------------------------
-##	ZPlug
-## ----------------------------------------
-source ~/.zplug/init.zsh
-
-zplug "b4b4r07/enhancd"
-
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-
-## ----------------------------------------
 ##	Zinit
 ## ----------------------------------------
-## Install Zinit if not installed
-#if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-#	print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
-#	command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-#	command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
-#	print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-#	print -P "%F{160}▓▒░ The clone has failed.%f%b"
-#fi
-#
 # Zinit setting and install plugins
-#source "$HOME/.zinit/bin/zinit.zsh"
-#autoload -Uz _zinit
-#(( ${+_comps} )) && _comps[zinit]=_zinit
-#zinit lucid for \
-#	zsh-users/zsh-completions \
-#	zsh-users/zsh-autosuggestions \
-#	zsh-users/zsh-syntax-highlighting \
-#	as'completion' is-snippet 'https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker' \
-#	as'completion' is-snippet 'https://github.com/docker/machine/blob/master/contrib/completion/zsh/_docker-machine' \
-#	as'completion' is-snippet 'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
+source "$HOME/.zinit/bin/zinit.zsh"
+
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light b4b4r07/enhancd
+
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
 ## ----------------------------------------
 ##	Prompt
