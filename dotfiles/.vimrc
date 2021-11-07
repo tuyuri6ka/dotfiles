@@ -26,18 +26,30 @@ endif
 
 "" Install plugins
 call plug#begin(s:plugdir)
+	"" 爆速HTMLコーディング
 	Plug 'mattn/emmet-vim'
+	"" カラーコードをコード上でプレビューする
 	Plug 'ap/vim-css-color'
+	"" 閉じカッコを自動で保管してくれる
 	Plug 'cohama/lexima.vim'
+	"" 見た目の色合いを調整
 	Plug 'jacoborus/tender.vim'
+	"" 選択範囲をgccで一括コメント
 	Plug 'tpope/vim-commentary'
+	"" カッコなどの編集に便利
 	Plug 'machakann/vim-sandwich'
+	Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'
+	"" 行揃えに便利
 	Plug 'junegunn/vim-easy-align'
+	"" <Leader>. s<char><char> or l で瞬間移動
 	Plug 'Lokaltog/vim-easymotion'
+	"" <Ctrl-d or u> でなめらかに移動
 	Plug 'yuttie/comfortable-motion.vim'
+	"" 末尾のwhitespaaceを表示。:FixWhiteSpaceで一括削除（:5,10Fixなどで行指定も可能）
 	Plug 'bronson/vim-trailing-whitespace'
 	Plug 'ConradIrwin/vim-bracketed-paste'
 	Plug 'tpope/vim-fugitive' | Plug 'rhysd/conflict-marker.vim'
+
 	let g:polyglot_disabled = ['csv'] | Plug 'sheerun/vim-polyglot'
 call plug#end()
 
