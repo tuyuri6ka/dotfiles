@@ -6,7 +6,7 @@ set -eu
 ##  Dotfiles
 ## ----------------------------------------
 
-DOTFILES_GITHUB="hoge"
+DOTFILES_GITHUB="https://github.com/tuyuri6ka/dotfiles.git"
 
 dotfiles_logo='
       | |     | |  / _(_) |
@@ -67,19 +67,19 @@ dotfiles_download () {
 	e_header "Downloading dotfiles..."
 
 	if is_exists "git"; then
-		#git clone --recursive "$DOTFILES_GITHUB" "$DOTPATH"
+		git clone --recursive "$DOTFILES_GITHUB" "$DOTPATH"
 		e_success "git clone"
 
 	elif is_exists "curl" || is_exists "wget"; then
 		# curl or get
 		local tarball=""
 		if is_exists "curl"; then
-			#curl -L "$tarball"
+			curl -L "$tarball"
 			e_success "curl"
 		elif is_exists "wget"; then
-			#curl -O - "$tarball"
+			curl -O - "$tarball"
 			e_success "wget"
-		fi #| tar xvz ## pipe
+		fi | tar xvz ## pipe
 
 		if [ ! -d dotfiles-master ]; then
 			e_error "dotfiles-master: not found"
@@ -87,7 +87,7 @@ dotfiles_download () {
 		fi
 
 		echo "command"
-		#command mv -f dotfiles-master "$DOTPATH"
+		command mv -f dotfiles-master "$DOTPATH"
 	else
 		e_error "Sorry. Please install curl or wget..."
 		exit 1
