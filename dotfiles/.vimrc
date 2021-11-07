@@ -34,12 +34,12 @@ call plug#begin(s:plugdir)
 	Plug 'machakann/vim-sandwich'
 	Plug 'junegunn/vim-easy-align'
 	Plug 'Lokaltog/vim-easymotion'
-	Plug 'yuttie/comfotable-motion.vim'
+	Plug 'yuttie/comfortable-motion.vim'
 	Plug 'bronson/vim-trailing-whitespace'
 	Plug 'ConradIrwin/vim-bracketed-paste'
+	Plug 'tpope/vim-fugitive' | Plug 'rhysd/conflict-marker.vim'
 	let g:polyglot_disabled = ['csv'] | Plug 'sheerun/vim-polyglot'
 call plug#end()
-
 
 "" ----------------------------------------
 ""	Configure Default Vim
@@ -52,7 +52,7 @@ set hidden nobackup noswapfile " do not create swap file
 set laststatus=2
 set lazyredraw " set not drawing each time of macro. it speeds up macro.
 set list
-set listchars=tab:>>,tail:-,eol:↓,extends:»,precedes:«,nbsp:%
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 set matchtime=1
 set mouse=a " enable to use mouse
 set nobomb " remove bom. bom is utf8 csv for excel because it needs to detect utf or not. It sometimes added by written by windows notepad.
