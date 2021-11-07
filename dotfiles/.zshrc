@@ -192,6 +192,7 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
+zinit ice proto'git' pick'init.sh'
 zinit light b4b4r07/enhancd
 
 autoload -Uz _zinit
