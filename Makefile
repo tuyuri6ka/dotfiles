@@ -15,7 +15,7 @@ deploy: ## Create symlink to home directory
 	@$(foreach val, $(DOTFILES)/dotfiles, ln -sfnv $(abspath $(val)) $(HOME)/$(val);)
 
 init: ## Setup environment settings. ex) sudo apt install hoge
-	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/bundle/install.sh
+	@DOTPATH=$(DOTPATH) bash $(DOTPATH)/bundles/install.sh
 
 clean: ## Remove the dot files and this repo
 	@echo 'Remove dot files in your home directory...'
