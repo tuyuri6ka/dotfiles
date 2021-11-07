@@ -102,7 +102,7 @@ dotfiles_symlink () {
 
 	CWD=$DOTPATH/dotfiles
 	if [ ! -d "$CWD" ]; then
-		e_error "$DOTPATH: not found"
+		e_error "$CWD: not found"
 		exit 1
 	fi
 	cd $CWD
@@ -148,13 +148,13 @@ install_bundles() {
 	e_newline
 	e_header "Install bundles..."
 
-	CWD=$DOTPATH/bundle
+	CWD=$DOTPATH/bundles
 	if [ ! -d "$CWD" ]; then
 		e_error "$CWD: not found"
 	fi
 
 	cd $CWD
-	ls $CWD | grep sh | xargs /bin/bash
+	ls | grep sh | /bin/bash
 
 	e_newline && e_done "Install bundles"
 }
