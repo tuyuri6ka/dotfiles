@@ -100,12 +100,29 @@ dotfiles_symlink () {
 	e_newline
 	e_header "Make symbolic link for dotfiles..."
 
-	if [ ! -d "$DOTPATH" ]; then
+	CWD=$DOTPATH/dotfiles
+	if [ ! -d "$CWD" ]; then
 		e_error "$DOTPATH: not found"
 		exit 1
 	fi
+	cd $CWD
 
-	cd "$DOTPATH"
+	handle_symlink_from_path() {
+		# get dotfile abspath
+		dotfile=$1
+		dirpath=`pwd`
+		dotfilename=`basename ${dotfile}`
+
+		src_abspath=${dirpath}/${dotfilename}
+		target_abspath="${HOME}/${dotfilename}"
+#		ln -sfvn "${src_abspath}" "${target_abspath}"
+	}
+	# regist function in order to exec find_cmd
+	export -f handle_symlink_from_path
+
+
+	find_cmd="find ./ \( -type l -or -type f \) -exec /bin/bash -c 'handle_symlink_from_path \"{}\"' \;"
+	eval "${find_cmd}"
 
 	make deploy && e_done "Make symbolic link for dotfiles"
 }
@@ -113,6 +130,10 @@ dotfiles_symlink () {
 setup_env () {
 	e_newline
 	e_header "Setup environment..."
+
+	
+	sudo apt update
+	sudo apt install zsh
 
 	if [ -f Makefile ]; then
 		make init
