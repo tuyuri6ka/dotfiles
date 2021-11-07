@@ -6,7 +6,8 @@ set -eu
 ##  Dotfiles
 ## ----------------------------------------
 
-DOTFILES_GITHUB="https://github.com/tuyuri6ka/dotfiles.git"
+DOTFILES_GITHUB="git@github.com:tuyuri6ka/dotfiles.git"
+#DOTFILES_GITHUB="https://github.com/tuyuri6ka/dotfiles.git"
 
 dotfiles_logo='
       | |     | |  / _(_) |
