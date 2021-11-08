@@ -1,10 +1,11 @@
 ## ----------------------------------------
-## powerlevel10k setting
-##  - Must be the top of .zshrc
-##  - p10k configure
+## powerlevel10k setting part1
+## Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+## Initialization code that may require console input (password prompts, [y/n]
+## confirmations, etc.) must go above this block; everything else may go below.
 ## ----------------------------------------
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 ## ----------------------------------------
@@ -199,13 +200,7 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 ## ----------------------------------------
-##	Prompt
-##	- Must be the end of .zshrc.
-##	- `p10k configure` to restart setting.
+## poerlevel10k Settings part2
+## To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 ## ----------------------------------------
-[ -f ~/.fzf.zdh ] && source ~/.fzf.zsh
-[ -f ~/zsh/powerlevel10k/powerlovel10k.zsh-theme ] && source ~/zsh/powerlevel10k/powerlevel10k.zsh-theme
-[[ ! ~/zsh/powerlevel10k/.p10k.zsh ]] || source ~/zsh/powerlevel10k/.p10k.zsh
-
-### End of Zinit's installer chunk
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
