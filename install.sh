@@ -136,7 +136,7 @@ setup_env () {
 	e_newline
 	e_header "Setup environment..."
 
-	
+
 	sudo apt update
 	sudo apt install zsh
 

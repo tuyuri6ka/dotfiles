@@ -193,7 +193,7 @@ highlight ConflictMarkerEND    guibg=#2f628e
 "" -----------------------------------------
 " VimTrailingWhiteSpace
 "" -----------------------------------------
-nnoremap <Leader>trim :FixWhiteSpace<CR>
+nnoremap <Leader>trim :FixWhitespace<CR>
 
 
 "" -----------------------------------------
