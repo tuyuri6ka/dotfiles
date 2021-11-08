@@ -28,8 +28,8 @@ export LS_COLORS='di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46
 ## ----------------------------------------
 ##	Editor
 ## ----------------------------------------
-export EDITOR=vim
-#export EDITOR=nvim
+#export EDITOR=vim
+export EDITOR=nvim
 export CVSEDITOR="${EDITOR}"
 export GIT_EDITOR="${EDITOR}"
 export SVN_EDITOR="${EDITOR}"
@@ -90,6 +90,7 @@ bindkey "^[[B" down-line-or-beginning-search
 ##  - ~/.aliases/**.zsh has more aliases which not often used.
 ## ----------------------------------------
 alias vi='nvim'
+alias vim='nvim'
 alias hf='hyperfine --max-runs 3'
 alias weather='curl -Acurl wttr.in/Tokyo'
 

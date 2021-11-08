@@ -106,26 +106,30 @@ dotfiles_symlink () {
 		e_error "$CWD: not found"
 		exit 1
 	fi
-	cd $CWD
 
 	handle_symlink_from_path() {
-		# get dotfile abspath
-		dotfile=$1
-		dirpath=`pwd`
-		dotfilename=`basename ${dotfile}`
-
-		src_abspath=${dirpath}/${dotfilename}
-		target_abspath="${HOME}/${dotfilename}"
-#		ln -sfvn "${src_abspath}" "${target_abspath}"
+		file=$1
+		dirpath=$(dirname "${file}") && filename=$(basename "${file}")
+		abspath=$(cd "${dirpath}" && pwd)"/${filename}"
+		relpath=$(echo "${file}" | sed "s|^\./dotfiles/||")
+		target="${HOME}/${relpath}"
+		mkdir -p "$(dirname "${target}")"
+		ln -sfnv "${abspath}" "${target}"
 	}
-	# regist function in order to exec find_cmd
 	export -f handle_symlink_from_path
 
+	bulk_symlink_target=(
+		"./dotfiles/.aliases"
+		"./dotfiles/.git_template"
+  	)
 
-	find_cmd="find ./ \( -type l -or -type f \) -exec /bin/bash -c 'handle_symlink_from_path \"{}\"' \;"
-	eval "${find_cmd}"
-
-	make deploy && e_done "Make symbolic link for dotfiles"
+	find_exclude=""
+	for i in "${bulk_symlink_target[@]}"; do
+		handle_symlink_from_path "${i}"
+		find_exclude="${find_exclude} -path \"${i}\" -prune -or "
+	done
+	find_command="find ./dotfiles ${find_exclude} \( -type l -or -type f \) -exec bash -c 'handle_symlink_from_path \"{}\"' \;"
+	eval "${find_command}" && e_done "Make symbolic link for dotfiles"
 }
 
 setup_env () {
