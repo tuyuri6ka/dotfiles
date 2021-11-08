@@ -17,7 +17,6 @@ export PATH=/sbin:$PATH
 export PATH=/usr/sbin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
 
-source ~/git-prompt.sh
 source ~/.cargo/env
 
 ## ----------------------------------------
