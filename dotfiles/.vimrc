@@ -78,6 +78,7 @@ set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 set matchtime=1
 set mouse=a " enable to use mouse
 set nobomb " remove bom. bom is utf8 csv for excel because it needs to detect utf or not. It sometimes added by written by windows notepad.
+set noswapfile
 set number " show line number
 set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
 set showmatch " show corresponding brackets
@@ -162,8 +163,21 @@ nmap ga <Plug>(LiveEasyAlign)
 "" -----------------------------------------
 "" EasyMotion
 "" -----------------------------------------
-let g:EasyMotion_do_mapping=0
-let g:EasyMotion_enter_jump_first=1
+map <Leader> <Plug>(easymotion-prefix)
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" `s{char}{char}{label}`
+map <leader>s <Plug>(easymotion-bd-f2)
+nmap <leader>s <Plug>(easymotion-overwin-f2)<Paste>
+
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" Move to line
+map <leader>l <Plug>(easymotion-bd-jk)
+nmap <leader>l <Plug>(easymotion-overwin-line)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 "" -----------------------------------------
 "" ConflictMarker
