@@ -1,0 +1,128 @@
+[user]
+	name  = tuyuri6ka
+	email = m.motoike.kra@gmail.com
+
+[alias]
+	ad = add
+	ada = add -A
+	br = branch
+	bra = branch -av
+	cl = clean -df
+	cm = commit --verbose
+	co = checkout
+	cob = checkout -b
+	coc = !git branch | fzf | xargs git checkout
+	cof = !git ls-files -m -o --exclude-standard | fzf -m --print0 | xargs -0 git checkout
+	cor = !"f() { git fetch -p && git checkout -b $1 origin/$1 }; f"
+	cp = cherry-pick
+	df = diff
+	dfc = diff --cahed
+	dfh = diff HEAD
+	dft = difftool
+	dfr = !git diff origin `git rev-parse --abbrev-ref HEAD`
+	fp = fetch -p
+	lg = log --stat
+	lgg = !git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  lgs = !git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit | fzf --preview 'echo {} | cut -f1 -d\" \" | xargs git show --color'
+	lgd = !"f() { b=$(git rev-parse --abbrev-ref HEAD); git log origin/$b..$b --oneline | fzf --preview 'echo {} | cut -f1 -d\" \" | xargs git show --color'; }; f"
+	ps = !git push origin `git rev-parse --abbrev-ref HEAD`
+	pl = !git pull origin `git rev-parse --abbrev-ref HEAD`
+	plr = pull --rebase
+	pr  = !"f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request' | head -n 1; }; f"
+	rf  = reflog --format='%C(auto)%h %<|(20)%gd %C(blue)%ci%C(reset) %gs (%s)'
+  rfs = !git reflog --format='%C(auto)%h %<|(20)%gd %C(blue)%ci%C(reset) %gs (%s)' | awk -F' ' '{print $2}' | xargs git reset --hard
+	st = status
+	sc = stash clear
+	sl  = !git stash list | awk -F':' '{print $1}' | fzf --preview 'git -c color.ui=always stash show -p {}'
+sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'git -c color.ui=always stash show -p {}'`
+  sd  = !git stash drop `git stash list | awk -F':' '{print $1}' | fzf --preview 'git -c color.ui=always stash show -p {}'`
+  sk  = update-index --skip-worktree
+  su  = ls-files --others --exclude-standard
+  usk = update-index --no-skip-worktree
+	vi  = !nvim ~/.gitconfig
+
+[core]
+#	pager          = less
+	editor         = vim
+	hooksPath      = ~/.git_template
+	excludesfile   = ~/.gitignore
+	attributesfile = ~/.gitattributes
+
+## ---------------------
+## git-delta settings
+## ---------------------
+[pager]
+	diff = nkf -w -x | delta | less
+	show = nkf -w -x | delta | less
+	log  = nkf -w -x | delta | less
+	reflog = delta
+	line-numbers = true
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	features = unobtrusive-line-numbers decorations
+	whitespace-error-style = 22 reverse
+[delta "unobtrusive-line-numbers"]
+	line-numbers = true
+	line-numbers-minus-style = "#444444"
+	line-numbers-zero-style = "#444444"
+	line-numbers-plus-style = "#444444"
+	line-numbers-left-format = "{nm:>4}┊"
+	line-numbers-right-format = "{np:>4}│"
+	line-numbers-left-style = blue
+	line-numbers-right-style = blue
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = white box
+## ---------------------
+
+[color]
+	ui         = true
+	diff       = auto
+	branch     = auto
+	status     = auto
+	showbranch = auto
+
+[diff]
+	prompt = false
+	tool = vimdiff
+	algorithm = histogram
+
+[color "branch"]
+	local   = green
+	remote  = red
+	current = green reverse
+
+[color "diff"]
+	old  = red
+	new  = green
+	meta = blue
+	#frag = magenta
+
+[color "status"]
+	added     = green
+	changed   = red
+	untracked = red
+
+[color "branch"]
+	local     = green
+	remote    = red
+	untracked = red
+
+[merge]
+	ff   = false
+	tool = vimdiff
+
+[mergetool "vimdiff"]
+	path = vim
+
+[pull]
+	ff = only
+
+[push]
+	default = simple
+
+[commit]
+	template = ~/.git_template/commit-template
