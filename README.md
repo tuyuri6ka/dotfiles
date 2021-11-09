@@ -1,26 +1,26 @@
-# ŠT—vF Summary & Installlation
-- install.sh ‚ğ’@‚­‚±‚Æ‚ÅA‚±‚ÌƒŠƒ|ƒWƒgƒŠ‚ª.dotfilesƒtƒHƒ‹ƒ_”z‰º‚Éì¬‚³‚ê‚Ü‚·B
-- Šedotfiles‚ÌƒVƒ“ƒ{ƒŠƒbƒNƒŠƒ“ƒN‚ªƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚Éì¬‚³‚ê‚é‚Æ‚Æ‚à‚É•K—v‚Èƒc[ƒ‹‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ü‚·B
-- ‚È‚¨A“®ì‚ÍWSL2‚ÅŠm”F‚µ‚Ä‚¢‚Ü‚·B
+## æ¦‚è¦ï¼š Summary & Installlation
+- install.sh ã‚’å©ãã“ã¨ã§ã€ã“ã®ãƒªãƒã‚¸ãƒˆãƒªãŒ.dotfilesãƒ•ã‚©ãƒ«ãƒ€é…ä¸‹ã«ä½œæˆã•ã‚Œã¾ã™ã€‚
+- å„dotfilesã®ã‚·ãƒ³ãƒœãƒªãƒƒã‚¯ãƒªãƒ³ã‚¯ãŒãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ä½œæˆã•ã‚Œã‚‹ã¨ã¨ã‚‚ã«å¿…è¦ãªãƒ„ãƒ¼ãƒ«ãŒã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¾ã™ã€‚
+- ãªãŠã€å‹•ä½œã¯WSL2ã§ç¢ºèªã—ã¦ã„ã¾ã™ã€‚
 
-# \¬:Configurations Shortcut
+## æ§‹æˆ:Configurations Shortcut
 - **Shell** : [zsh](https://github.com/tuyuri6ka/dotfiles/blob/master/dotfiles/.zshrc)
 - **Editor** : [Neovim](https://github.com/tuyuri6ka/dotfiles/blob/master/dotfiles/.vimrc)
 - **Templates** : [git_template](https://github.com/tuyuri6ka/dotfiles/tree/add_dotfiles/dotfiles/.git_template)
 
-# Thanks
-ˆÈ‰º‚Ì•ûX‚Ìdotfiles‚ğQl‚É‚µ‚Ü‚µ‚½B
-Dir\¬‚âŠÖ”‚È‚Ç‚ğŠÛX”qØ‚³‚¹‚Ä‚¢‚½‚¾‚¢‚½‚à‚Ì‚ª‘½‚¢‚Å‚·B
+## Thanks
+ä»¥ä¸‹ã®æ–¹ã€…ã®dotfilesã‚’å‚è€ƒã«ã—ã¾ã—ãŸã€‚
+Diræ§‹æˆã‚„é–¢æ•°ãªã©ã‚’ä¸¸ã€…æ‹å€Ÿã•ã›ã¦ã„ãŸã ã„ãŸã‚‚ã®ãŒå¤šã„ã§ã™ã€‚
 - https://github.com/ulwlu/dotfiles
 - https://github.com/b4b4r07/dotfiles
 - https://github.com/tam-carre/dotfiles
 
-Ql‹L–
+å‚è€ƒè¨˜äº‹
 - https://qiita.com/b4b4r07/items/b70178e021bef12cd4a2
 - https://qiita.com/ulwlu/items/98901f4c4f0683e7aa57
 - https://zenn.dev/ulwlu/articles/1c3a1da12887ed
 
-¡Œã‚Ì‰ü—Ç‚Ì‚½‚ß‚ÉQl‚É‚È‚è‚»‚¤‚È‹L–
+ä»Šå¾Œã®æ”¹è‰¯ã®ãŸã‚ã«å‚è€ƒã«ãªã‚Šãã†ãªè¨˜äº‹
 - https://www.reddit.com/r/unixporn/comments/hyuvk6/dwm_cats_meow/
 - https://github.com/yoyostile/nerdbar.widget-1
 - https://www.reddit.com/r/unixporn/
