@@ -48,6 +48,36 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	excludesfile   = ~/.gitignore
 	attributesfile = ~/.gitattributes
 
+## ---------------------
+## git-delta settings
+## ---------------------
+[pager]
+	diff = nkf -w -x | delta | less
+	show = nkf -w -x | delta | less
+	log  = nkf -w -x | delta | less
+	reflog = delta
+	line-numbers = true
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	features = unobtrusive-line-numbers decorations
+	whitespace-error-style = 22 reverse
+[delta "unobtrusive-line-numbers"]
+	line-numbers = true
+	line-numbers-minus-style = "#444444"
+	line-numbers-zero-style = "#444444"
+	line-numbers-plus-style = "#444444"
+	line-numbers-left-format = "{nm:>4}┊"
+	line-numbers-right-format = "{np:>4}│"
+	line-numbers-left-style = blue
+	line-numbers-right-style = blue
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = white box
+## ---------------------
+
 [color]
 	ui         = true
 	diff       = auto
@@ -66,18 +96,23 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	current = green reverse
 
 [color "diff"]
-	old  = red bold
-	new  = green bold
-	meta = yellow bold
-	frag = magenta bold
+	old  = red
+	new  = green
+	meta = blue
+	#frag = magenta
 
 [color "status"]
 	added     = green
 	changed   = red
 	untracked = red
 
+[color "branch"]
+	local     = green
+	remote    = red
+	untracked = red
+
 [merge]
-	ff = false
+	ff   = false
 	tool = vimdiff
 
 [mergetool "vimdiff"]
@@ -91,17 +126,3 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 
 [commit]
 	template = ~/.git_template/commit-template
-
-[delta]
-	width                    = 160
-	line-numbers             = true
-	side-by-side             = true
-	features                 = decorations
-	hunk-header-style        = omit
-	syntax-theme             = Monokai Extended
-	whitespace-error-style   = 22 reverse
-	line-numbers-left-style  = "#3D424D"
-	line-numbers-right-style = "#3D424D"
-
-[interactive]
-	diffFilter = delta --color-only
