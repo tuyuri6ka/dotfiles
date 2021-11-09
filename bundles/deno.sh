@@ -1,4 +1,4 @@
-echo "deno install"
+#!/bin/bash
 
 #sudo snap install deno
 cargo install deno

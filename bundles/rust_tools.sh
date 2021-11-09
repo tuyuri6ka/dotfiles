@@ -1,4 +1,4 @@
-echo "rust tools install..."
+#!/bin/bash
 
 # prepare rust tool install
 sudo apt install clang
