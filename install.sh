@@ -151,8 +151,7 @@ install_bundles() {
 		e_error "$CWD: not found"
 	fi
 
-	cd $CWD
-	ls | grep sh | /bin/bash
+	cd $CWD && /bin/bash ./install.sh
 
 	e_newline && e_done "Install bundles"
 }
