@@ -107,6 +107,7 @@ dotfiles_symlink () {
 		exit 1
 	fi
 
+	cd $DOTPATH
 	handle_symlink_from_path() {
 		file=$1
 		dirpath=$(dirname "${file}") && filename=$(basename "${file}")
@@ -121,7 +122,7 @@ dotfiles_symlink () {
 	bulk_symlink_target=(
 		"./dotfiles/.aliases"
 		"./dotfiles/.git_template"
-  	)
+	)
 
 	find_exclude=""
 	for i in "${bulk_symlink_target[@]}"; do
@@ -160,7 +161,36 @@ dotfiles_clean () {
 	e_newline
 	e_header "Dotfiles symbolic link delete..."
 
-	e_newline && e_done "Dotfiles symbolic link delete"
+	CWD=$DOTPATH/dotfiles
+	if [ ! -d "$CWD" ]; then
+		e_error "$CWD: not found"
+		exit 1
+	fi
+
+	cd $DOTPATH
+	handle_symlink_from_path() {
+		file=$1
+		dirpath=$(dirname "${file}") && filename=$(basename "${file}")
+		abspath=$(cd "${dirpath}" && pwd)"/${filename}"
+		relpath=$(echo "${file}" | sed "s|^\./dotfiles/||")
+		target="${HOME}/${relpath}"
+		mkdir -p "$(dirname "${target}")"
+		unlink "${target}"
+	}
+	export -f handle_symlink_from_path
+
+	bulk_symlink_target=(
+		"./dotfiles/.aliases"
+		"./dotfiles/.git_template"
+	)
+
+	find_exclude=""
+	for i in "${bulk_symlink_target[@]}"; do
+		handle_symlink_from_path "${i}"
+		find_exclude="${find_exclude} -path \"${i}\" -prune -or "
+	done
+	find_command="find ./dotfiles ${find_exclude} \( -type l -or -type f \) -exec bash -c 'handle_symlink_from_path \"{}\"' \;"
+	eval "${find_command}" && e_newline && e_done "Dotfiles symbolic link delete"
 
 }
 
