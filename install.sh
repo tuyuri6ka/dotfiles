@@ -136,16 +136,9 @@ setup_env () {
 	e_newline
 	e_header "Setup environment..."
 
+	sudo apt update && e_success "apt update"
+	sudo apt install zsh && e_success "zsh install"
 
-	sudo apt update
-	sudo apt install zsh
-
-	if [ -f Makefile ]; then
-		make init
-	else
-		e_error "Makefile: not found"
-		exit 1
-	fi
 	e_newline && e_done "Initialize"
 }
 
