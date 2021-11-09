@@ -192,6 +192,7 @@ dotfiles_clean () {
 	find_command="find ./dotfiles ${find_exclude} \( -type l -or -type f \) -exec bash -c 'handle_symlink_from_path \"{}\"' \;"
 	eval "${find_command}" && e_newline && e_done "Dotfiles symbolic link delete"
 
+	e_warning ".dotfiles direcotry is left. If needed, please delete .dotfiles directory."
 }
 
 usage() {
