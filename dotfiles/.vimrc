@@ -26,7 +26,7 @@ endif
 
 "" Install plugins
 call plug#begin(s:plugdir)
-	"" 爆速HTMLコーディング
+	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
 	Plug 'mattn/emmet-vim'
 	"" カラーコードをコード上でプレビューする
 	Plug 'ap/vim-css-color'
