@@ -221,7 +221,7 @@ usage() {
 ## ----------------------------------------
 
 args=$@
-if [[ ${args[@]} =~ "--help" || $# -eq 0 ]]; then
+if [[ ${args[@]} =~ "--help" ]]; then
 	usage
 	exit 0
 fi
@@ -241,7 +241,7 @@ for opt in ${args[@]}; do
 		--setup_env) setup_env ;;
 		--bundles) install_bundles ;;
 		--clean) dotfiles_clean ;;
-		--all)
+		*)
 			# Download the repository
 			# ==> downloading
 			dotfiles_download &&
@@ -255,7 +255,7 @@ for opt in ${args[@]}; do
 			# ==> install usefull tools
 			install_bundles
 			;;
-		*) e_error "invalid option $1" ;;
+		#*) e_error "invalid option $1" ;;
 	esac
 done;
 
