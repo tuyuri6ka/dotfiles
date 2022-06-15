@@ -3,7 +3,7 @@
 # prepare rust tool install
 sudo apt install clang
 
-curl https://sh.rustup.rs -sSf | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 rustup install stable
 rustup default stable
