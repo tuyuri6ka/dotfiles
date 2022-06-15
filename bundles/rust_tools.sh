@@ -8,6 +8,8 @@ curl https://sh.rustup.rs -sSf | sh
 rustup install stable
 rustup default stable
 
+source "$HOME/.cargo/env"
+
 # rust tool install
 cargo install sd
 cargo install bat
