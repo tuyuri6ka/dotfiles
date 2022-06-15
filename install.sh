@@ -220,9 +220,12 @@ usage() {
 ##  Main
 ## ----------------------------------------
 
-args=$@
-if [[ ${args[@]} =~ "--help" ]]; then
-	usage
+echo "$dotfiles_logo"
+if [[ $# -eq 0 ]]; then
+	dotfiles_download &&
+	dotfiles_symlink &&
+	setup_env &&
+	install_bundles
 	exit 0
 fi
 
@@ -232,16 +235,16 @@ if [[ $Ans != 'Y' ]]; then
 	exit 1
 fi
 
-echo "$dotfiles_logo"
-
+args=$@
 for opt in ${args[@]}; do
 	case $opt in
+		--help) usage ;;
 		--download) dotfiles_download ;;
 		--dotfiles) dotfiles_symlink ;;
 		--setup_env) setup_env ;;
 		--bundles) install_bundles ;;
 		--clean) dotfiles_clean ;;
-		*)
+		--all)
 			# Download the repository
 			# ==> downloading
 			dotfiles_download &&
@@ -255,7 +258,7 @@ for opt in ${args[@]}; do
 			# ==> install usefull tools
 			install_bundles
 			;;
-		#*) e_error "invalid option $1" ;;
+		*) e_error "invalid option $1" ;;
 	esac
 done;
 
