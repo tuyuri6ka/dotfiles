@@ -26,6 +26,8 @@ endif
 
 "" Install plugins
 call plug#begin(s:plugdir)
+	Plug 'prabirshrestha/vim-lsp'
+	Plug 'mattn/vim-lsp-settings'
 	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
 	Plug 'mattn/emmet-vim'
 	"" カラーコードをコード上でプレビューする
@@ -54,6 +56,7 @@ call plug#begin(s:plugdir)
 
 	"" 補完用Plugin
 	Plug 'Shougo/ddc.vim'
+	Plug 'shun/ddc-vim-lsp'
 	Plug 'vim-denops/denops.vim'
 	" Install your sources
 	Plug 'Shougo/ddc-around'
@@ -67,7 +70,7 @@ call plug#end()
 ""	Configure Default Vim
 "" ----------------------------------------
 let mapleader="\<Space>" " shortcut trigger
-set clipboard=unnamedplus " copy and make it usable with any other platform
+"set clipboard=unnamedplus " copy and make it usable with any other platform
 set cursorcolumn " hilighten cursor column
 set fileformats=unix,dos,mac " detect break line automatically
 set hidden nobackup noswapfile " do not create swap file

@@ -16,7 +16,6 @@ export PATH=.:$PATH
 export PATH=/sbin:$PATH
 export PATH=/usr/sbin:$PATH
 export PATH=$HOME/.cargo/bin:$PATH
-
 source ~/.cargo/env
 
 ## ----------------------------------------
@@ -206,8 +205,8 @@ zinit load zdharma-continuum/history-search-multi-word
 # Two regular plugins loaded without investigating.
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
-# Snippet
-zinit snippet https://gist.githubusercontent.com/hightemp/5071909/raw/
+# Snippet: goコマンドがsnippetで上書きされてしまう。
+# zinit snippet https://gist.githubusercontent.com/hightemp/5071909/raw/
 
 ## prompt
 # git clone depth

@@ -19,6 +19,5 @@ cargo install procs
 cargo install du-dust
 cargo install fd-find
 cargo install ripgrep
-cargo install git-delta
 cargo install hyperfine
 #cargo install cargo-update

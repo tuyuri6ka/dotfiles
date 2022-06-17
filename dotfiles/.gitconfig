@@ -49,33 +49,13 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	attributesfile = ~/.gitattributes
 
 ## ---------------------
-## git-delta settings
+## git settings
 ## ---------------------
 [pager]
-	diff = nkf -w -x | delta | less
-	show = nkf -w -x | delta | less
-	log  = nkf -w -x | delta | less
-	reflog = delta
+	diff = nkf -w -x | less
+	show = nkf -w -x | less
+	log  = nkf -w -x | less
 	line-numbers = true
-[interactive]
-	diffFilter = delta --color-only
-[delta]
-	features = unobtrusive-line-numbers decorations
-	whitespace-error-style = 22 reverse
-[delta "unobtrusive-line-numbers"]
-	line-numbers = true
-	line-numbers-minus-style = "#444444"
-	line-numbers-zero-style = "#444444"
-	line-numbers-plus-style = "#444444"
-	line-numbers-left-format = "{nm:>4}┊"
-	line-numbers-right-format = "{np:>4}│"
-	line-numbers-left-style = blue
-	line-numbers-right-style = blue
-[delta "decorations"]
-    commit-decoration-style = bold yellow box ul
-    file-style = bold yellow ul
-    file-decoration-style = none
-    hunk-header-decoration-style = white box
 ## ---------------------
 
 [color]
@@ -89,6 +69,7 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	prompt = false
 	tool = vimdiff
 	algorithm = histogram
+	colorMoved = dimmed-zebra
 
 [color "branch"]
 	local   = green
@@ -99,7 +80,6 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	old  = red
 	new  = green
 	meta = blue
-	#frag = magenta
 
 [color "status"]
 	added     = green
