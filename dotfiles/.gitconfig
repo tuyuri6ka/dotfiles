@@ -69,7 +69,6 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 	prompt = false
 	tool = vimdiff
 	algorithm = histogram
-	colorMoved = dimmed-zebra
 
 [color "branch"]
 	local   = green
