@@ -91,7 +91,7 @@ set statusline=%F
 let $LANG='en_US.UTF-8'
 set title titlestring=%F " set as absolute path
 set whichwrap=b,s,h,l,<,>,[,] " enable to go to next line with these symbol
-set encoding=utf-8 fileencodings=cp932,sjis,euc-jp,utf-8,iso-2022-jp " detect all kind of file format
+set encoding=utf-8 fileencodings=utf-8,cp932,sjis,euc-jp,iso-2022-jp " detect all kind of file format
 
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
