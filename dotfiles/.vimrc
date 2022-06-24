@@ -37,9 +37,6 @@ call plug#begin(s:plugdir)
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 	Plug 'junegunn/fzf.vim'
 
-	"" :QuickRun
-	Plug 'thinca/vim-quickrun'
-
 	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
 	Plug 'mattn/emmet-vim'
 	"" カラーコードをコード上でプレビューする
@@ -55,10 +52,6 @@ call plug#begin(s:plugdir)
 	Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'
 	"" 行揃に便利
 	Plug 'junegunn/vim-easy-align'
-	"" <Leader>. s<char><char> or l で瞬間移動
-	Plug 'Lokaltog/vim-easymotion'
-	"" <Ctrl-d or u> でなめらかに移動
-	Plug 'yuttie/comfortable-motion.vim'
 	"" 末尾のwhitespaaceを表示。:FixWhiteSpaceで一括削除（:5,10Fixなどで行指定も可能）
 	Plug 'bronson/vim-trailing-whitespace'
 	Plug 'ConradIrwin/vim-bracketed-paste'
@@ -67,7 +60,6 @@ call plug#begin(s:plugdir)
 	Plug 'airblade/vim-gitgutter'
 
 	Plug 'sheerun/vim-polyglot'
-
 	"" 補完用Plugin
 	Plug 'Shougo/ddc.vim'
 	Plug 'shun/ddc-vim-lsp'
@@ -111,19 +103,15 @@ set encoding=utf-8 fileencodings=utf-8,cp932,sjis,euc-jp,iso-2022-jp " detect al
 autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
 
 " nvimとvimで設定を変える
-if has('nvim')
-	set inccommand=split " very useful replace preview
-else
-	syntax on " make syntax visible
-	set ttyfast " scroll fast
-	set autoread " if file changed outside vim. it alerms to reload or not
-	set wildmenu " menu completion
-	set belloff=all " cut down bell
-	set ruler showcmd " show status
-	set hlsearch incsearch " search in smart way
-	filetype plugin indent on
-	set backspace=indent,eol,start " you can delete by backspace
-endif
+syntax on " make syntax visible
+set ttyfast " scroll fast
+set autoread " if file changed outside vim. it alerms to reload or not
+set wildmenu " menu completion
+set belloff=all " cut down bell
+set ruler showcmd " show status
+set hlsearch incsearch " search in smart way
+filetype plugin indent on
+set backspace=indent,eol,start " you can delete by backspace
 
 "" ----------------------------------------
 "" Mapping
@@ -137,16 +125,12 @@ endif
 ""              : http://yu8mada.com/2018/08/02/the-difference^between-nmap-and-nnoremap-in-vim/
 "" ----------------------------------------
 
-nnoremap <Leader>c :wv
-nnoremap <Leader>p :rv!
-"" nnoremap <Up> gk
-"" nnoremap <Down> gj
 nnoremap <Right> <C-w>l
 nnoremap <Left> <C-w>h
 nnoremap <Up> <C-w>k
 nnoremap <Down> <C-w>j
-nnoremap <silent> <C-j> :bnext<CR>
-nnoremap <silent> <C-k> :bprev<CR>
+nnoremap <silent> <C-[> :bnext<CR>
+nnoremap <silent> <C-]> :bprev<CR>
 
 "" -----------------------------------------
 "" Vim-Plug
@@ -156,46 +140,30 @@ nnoremap <Leader>update  :PlugUpdate<CR>
 nnoremap <Leader>install :PlugInstall<CR>
 
 "" -----------------------------------------
-"" vim-snippet
-"" -----------------------------------------
-let g:lsp_settings = {
-  \   'gopls': {
-  \     'initialization_options': {
-  \       'usePlaceholders': v:true,
-  \     },
-  \   },
-  \ }
-
-"" -----------------------------------------
 "" vim-lsp settings 各種機能のキーマッピング
 "" -----------------------------------------
 function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
+	setlocal omnifunc=lsp#complete
+	setlocal signcolumn=yes
+	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> gr <plug>(lsp-references)
+	nmap <buffer> gi <plug>(lsp-implementation)
+	nmap <buffer> gt <plug>(lsp-type-definition)
+	nmap <buffer> <leader>rn <plug>(lsp-rename)
+	nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+	nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+	nmap <buffer> K <plug>(lsp-hover)
 endfunction
 
 augroup lsp_install
-    au!
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
 "" -----------------------------------------
 "" Tender.vim
 "" -----------------------------------------
-if(has("termguicolors"))
-	set termguicolors
-endif
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-syntax enable
 colorscheme tender
 
 "" -----------------------------------------
@@ -213,23 +181,15 @@ xmap ga <Plug>(LiveEasyAlign)
 nmap ga <Plug>(LiveEasyAlign)
 
 "" -----------------------------------------
-"" EasyMotion
+"" vim-snippet
 "" -----------------------------------------
-map <Leader> <Plug>(easymotion-prefix)
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-
-" `s{char}{char}{label}`
-map <leader>s <Plug>(easymotion-bd-f2)
-nmap <leader>s <Plug>(easymotion-overwin-f2)<Paste>
-
-" Turn on case insensitive feature
-let g:EasyMotion_smartcase = 1
-
-" Move to line
-map <leader>l <Plug>(easymotion-bd-jk)
-nmap <leader>l <Plug>(easymotion-overwin-line)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
+let g:lsp_settings = {
+		\ 'gopls': {
+		\   'initialization_options': {
+		\     'usePlaceholders': v:true,
+		\   },
+		\ },
+		\ }
 
 "" -----------------------------------------
 "" vsnip
@@ -252,15 +212,18 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 
 " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
 " See https://github.com/hrsh7th/vim-vsnip/pull/50
-nmap        s   <Plug>(vsnip-select-text)
-xmap        s   <Plug>(vsnip-select-text)
-nmap        S   <Plug>(vsnip-cut-text)
-xmap        S   <Plug>(vsnip-cut-text)
+nmap s <Plug>(vsnip-select-text)
+xmap s <Plug>(vsnip-select-text)
+nmap S <Plug>(vsnip-cut-text)
+xmap S <Plug>(vsnip-cut-text)
 
 " If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
 let g:vsnip_filetypes = {}
 let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+" store snippet dir
+let g:vsnip_snippet_dir = '~/.vsnip'
 
 "" -----------------------------------------
 "" Fzf.vim
@@ -295,21 +258,28 @@ nnoremap <Leader>trim :FixWhitespace<CR>
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around'])
+call ddc#custom#patch_global('sources', ['around', 'vim-lsp', 'vsnip'])
 
+" Change source options
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
 " https://github.com/Shougo/ddc-sorter_rank
 call ddc#custom#patch_global('sourceOptions', {
       \ '_': {
       \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank']},
+      \   'sorters': ['sorter_rank']
+			\ },
+			\ 'around': {'mark': 'A'},
+			\ 'vsnip': {
+			\   'mark': 'vsnip',
+			\  },
+			\ 'vim-lsp': {
+			\   'mark': 'lsp',
+			\   'forceCompletionPattern': '\\.|:|->',
+			\   'minAutoCompleteLength': 1
+			\ },
       \ })
 
-" Change source options
-call ddc#custom#patch_global('sourceOptions', {
-      \ 'around': {'mark': 'A'},
-      \ })
 call ddc#custom#patch_global('sourceParams', {
       \ 'around': {'maxSize': 500},
       \ })
@@ -326,12 +296,12 @@ call ddc#custom#patch_filetype('markdown', 'sourceParams', {
 " Mappings
 " <TAB>: completion.
 inoremap <silent><expr> <TAB>
-\ pumvisible() ? '<C-n>' :
-\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-\ '<TAB>' : ddc#map#manual_complete()
+			\ ddc#map#pum_visible() ? '<C-n>' :
+			\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+			\ '<TAB>' : ddc#map#manual_complete()
 
 " <S-TAB>: completion back.
-inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
+inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
 
 " Use ddc.
 call ddc#enable()
