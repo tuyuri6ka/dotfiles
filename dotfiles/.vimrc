@@ -26,8 +26,20 @@ endif
 
 "" Install plugins
 call plug#begin(s:plugdir)
+	"" :LspManageServer → :LspInstallServer
 	Plug 'prabirshrestha/vim-lsp'
 	Plug 'mattn/vim-lsp-settings'
+	"" lspから送られてきたsnippetをvimに渡す
+	Plug 'hrsh7th/vim-vsnip'
+	Plug 'hrsh7th/vim-vsnip-integ'
+
+	"" :Files
+	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+	Plug 'junegunn/fzf.vim'
+
+	"" :QuickRun
+	Plug 'thinca/vim-quickrun'
+
 	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
 	Plug 'mattn/emmet-vim'
 	"" カラーコードをコード上でプレビューする
@@ -41,7 +53,7 @@ call plug#begin(s:plugdir)
 	"" カッコなどの編集に便利
 	Plug 'machakann/vim-sandwich'
 	Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'
-	"" 行揃えに便利
+	"" 行揃に便利
 	Plug 'junegunn/vim-easy-align'
 	"" <Leader>. s<char><char> or l で瞬間移動
 	Plug 'Lokaltog/vim-easymotion'
@@ -51,8 +63,10 @@ call plug#begin(s:plugdir)
 	Plug 'bronson/vim-trailing-whitespace'
 	Plug 'ConradIrwin/vim-bracketed-paste'
 	Plug 'tpope/vim-fugitive' | Plug 'rhysd/conflict-marker.vim'
+	"" 差分行をハイライト
+	Plug 'airblade/vim-gitgutter'
 
-	let g:polyglot_disabled = ['csv'] | Plug 'sheerun/vim-polyglot'
+	Plug 'sheerun/vim-polyglot'
 
 	"" 補完用Plugin
 	Plug 'Shougo/ddc.vim'
@@ -71,6 +85,7 @@ call plug#end()
 "" ----------------------------------------
 let mapleader="\<Space>" " shortcut trigger
 "set clipboard=unnamedplus " copy and make it usable with any other platform
+set nocompatible " to use vim-polyglot
 set cursorcolumn " hilighten cursor column
 set fileformats=unix,dos,mac " detect break line automatically
 set hidden nobackup noswapfile " do not create swap file
@@ -110,10 +125,6 @@ else
 	set backspace=indent,eol,start " you can delete by backspace
 endif
 
-if !exists('$TMUX')
-	set termguicolors
-endif
-
 "" ----------------------------------------
 "" Mapping
 "" normal  mode : nnoremap map
@@ -128,19 +139,14 @@ endif
 
 nnoremap <Leader>c :wv
 nnoremap <Leader>p :rv!
-nnoremap <Up> gk
-nnoremap <Down> gj
-
+"" nnoremap <Up> gk
+"" nnoremap <Down> gj
+nnoremap <Right> <C-w>l
+nnoremap <Left> <C-w>h
+nnoremap <Up> <C-w>k
+nnoremap <Down> <C-w>j
 nnoremap <silent> <C-j> :bnext<CR>
 nnoremap <silent> <C-k> :bprev<CR>
-
-"" Tender.vim
-if(has("termguicolors"))
-	set termguicolors
-endif
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-syntax enable
-colorscheme tender
 
 "" -----------------------------------------
 "" Vim-Plug
@@ -148,6 +154,49 @@ colorscheme tender
 nnoremap <Leader>clean   :PlugClean<CR>
 nnoremap <Leader>update  :PlugUpdate<CR>
 nnoremap <Leader>install :PlugInstall<CR>
+
+"" -----------------------------------------
+"" vim-snippet
+"" -----------------------------------------
+let g:lsp_settings = {
+  \   'gopls': {
+  \     'initialization_options': {
+  \       'usePlaceholders': v:true,
+  \     },
+  \   },
+  \ }
+
+"" -----------------------------------------
+"" vim-lsp settings 各種機能のキーマッピング
+"" -----------------------------------------
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+endfunction
+
+augroup lsp_install
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+"" -----------------------------------------
+"" Tender.vim
+"" -----------------------------------------
+if(has("termguicolors"))
+	set termguicolors
+endif
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+syntax enable
+colorscheme tender
 
 "" -----------------------------------------
 "" EmmetVim
@@ -183,6 +232,48 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
 "" -----------------------------------------
+"" vsnip
+"" -----------------------------------------
+" NOTE: You can use other key to expand snippet.
+
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+" See https://github.com/hrsh7th/vim-vsnip/pull/50
+nmap        s   <Plug>(vsnip-select-text)
+xmap        s   <Plug>(vsnip-select-text)
+nmap        S   <Plug>(vsnip-cut-text)
+xmap        S   <Plug>(vsnip-cut-text)
+
+" If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
+let g:vsnip_filetypes = {}
+let g:vsnip_filetypes.javascriptreact = ['javascript']
+let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+"" -----------------------------------------
+"" Fzf.vim
+"" -----------------------------------------
+" This is the default option:
+"   - Preview window on the right with 50% width
+"   - CTRL-/ will toggle preview window.
+" - Note that this array is passed as arguments to fzf#vim#with_preview function.
+" - To learn more about preview window options, see `--preview-window` section of `man fzf`.
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+nnoremap <Leader>fd :Files<CR>
+
+"" -----------------------------------------
 "" ConflictMarker
 "" -----------------------------------------
 let g:conflict_marker_begin = '<<<<<<< .*$'
@@ -197,7 +288,6 @@ highlight ConflictMarkerEND    guibg=#2f628e
 " VimTrailingWhiteSpace
 "" -----------------------------------------
 nnoremap <Leader>trim :FixWhitespace<CR>
-
 
 "" -----------------------------------------
 " ddc.vim
@@ -234,7 +324,6 @@ call ddc#custom#patch_filetype('markdown', 'sourceParams', {
       \ })
 
 " Mappings
-
 " <TAB>: completion.
 inoremap <silent><expr> <TAB>
 \ pumvisible() ? '<C-n>' :
