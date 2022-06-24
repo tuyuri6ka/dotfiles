@@ -1,0 +1,16 @@
+{
+  "Function": {
+    "prefix": ["func"],
+    "body": [
+      "/**",
+      " * @author ${VIM:\\$USER}",
+      " */",
+      "func $1 ${2:extends ${3:Parent} }{",
+      "\tconstructor() {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "Func definition template."
+  }
+}

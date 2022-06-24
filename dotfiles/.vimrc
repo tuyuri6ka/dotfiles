@@ -161,6 +161,9 @@ augroup lsp_install
 	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+nnoremap <Leader>lsp  :LspInstallServer<CR>
+nnoremap <Leader>lspm :LspManageServer<CR>
+
 "" -----------------------------------------
 "" Tender.vim
 "" -----------------------------------------
@@ -223,7 +226,9 @@ let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
 
 " store snippet dir
-let g:vsnip_snippet_dir = '~/.vsnip'
+let g:vsnip_snippet_dir = '~/.dotfiles/dotfiles/.vsnip'
+
+nnoremap <Leader>snip :VsnipOpen
 
 "" -----------------------------------------
 "" Fzf.vim
@@ -272,6 +277,7 @@ call ddc#custom#patch_global('sourceOptions', {
 			\ 'around': {'mark': 'A'},
 			\ 'vsnip': {
 			\   'mark': 'vsnip',
+			\   'dup': v:true
 			\  },
 			\ 'vim-lsp': {
 			\   'mark': 'lsp',
