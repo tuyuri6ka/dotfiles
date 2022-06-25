@@ -140,6 +140,14 @@ nnoremap <Leader>update  :PlugUpdate<CR>
 nnoremap <Leader>install :PlugInstall<CR>
 
 "" -----------------------------------------
+"" Vim-fugitive
+"" -----------------------------------------
+nnoremap <silent> <Leader>gb :Git blame<CR>
+nnoremap <silent> <Leader>gd :Gdiffsplit<CR>
+nnoremap <silent> <Leader>gl :Git log<CR>
+nnoremap <silent> <Leader>gs :Git status<CR>
+
+"" -----------------------------------------
 "" vim-lsp settings 各種機能のキーマッピング
 "" -----------------------------------------
 function! s:on_lsp_buffer_enabled() abort
