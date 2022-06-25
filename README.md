@@ -1,11 +1,12 @@
 ## 概要： Summary & Installlation
 - install.sh を叩くことで、このリポジトリが.dotfilesフォルダ配下に作成されます。
+  - e.g.: bash -c "$(curl -L https://raw.githubusercontent.com/tuyuri6ka/dotfiles/master/install.sh)"
 - 各dotfilesのシンボリックリンクがホームディレクトリに作成されるとともに必要なツールがインストールされます。
-- なお、動作はWSL2で確認しています。
+- なお、動作をMac, WSLで確認していますが、細かいところを調整中です。
 
 ## 構成:Configurations Shortcut
 - **Shell** : [zsh](https://github.com/tuyuri6ka/dotfiles/blob/master/dotfiles/.zshrc)
-- **Editor** : [Neovim](https://github.com/tuyuri6ka/dotfiles/blob/master/dotfiles/.vimrc)
+- **Editor** : [vim](https://github.com/tuyuri6ka/dotfiles/blob/master/dotfiles/.vimrc)
 - **Templates** : [git_template](https://github.com/tuyuri6ka/dotfiles/tree/add_dotfiles/dotfiles/.git_template)
 
 ## Thanks
