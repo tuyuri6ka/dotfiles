@@ -129,7 +129,6 @@ nnoremap <Right> <C-w>l
 nnoremap <Left> <C-w>h
 nnoremap <Up> <C-w>k
 nnoremap <Down> <C-w>j
-nnoremap <silent> <C-[> :bnext<CR>
 nnoremap <silent> <C-]> :bprev<CR>
 
 "" -----------------------------------------
@@ -139,68 +138,68 @@ nnoremap <Leader>clean   :PlugClean<CR>
 nnoremap <Leader>update  :PlugUpdate<CR>
 nnoremap <Leader>install :PlugInstall<CR>
 
-"" -----------------------------------------
-"" Vim-fugitive
-"" -----------------------------------------
-nnoremap <silent> <Leader>gb :Git blame<CR>
-nnoremap <silent> <Leader>gd :Gdiffsplit<CR>
-nnoremap <silent> <Leader>gl :Git log<CR>
-nnoremap <silent> <Leader>gs :Git status<CR>
-
-"" -----------------------------------------
-"" vim-lsp settings 各種機能のキーマッピング
-"" -----------------------------------------
-function! s:on_lsp_buffer_enabled() abort
-	setlocal omnifunc=lsp#complete
-	setlocal signcolumn=yes
-	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-	nmap <buffer> gd <plug>(lsp-definition)
-	nmap <buffer> gr <plug>(lsp-references)
-	nmap <buffer> gi <plug>(lsp-implementation)
-	nmap <buffer> gt <plug>(lsp-type-definition)
-	nmap <buffer> <leader>rn <plug>(lsp-rename)
-	nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-	nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-	nmap <buffer> K <plug>(lsp-hover)
-endfunction
-
-augroup lsp_install
-	au!
-	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-nnoremap <Leader>lsp  :LspInstallServer<CR>
-nnoremap <Leader>lspm :LspManageServer<CR>
-
-"" -----------------------------------------
-"" Tender.vim
-"" -----------------------------------------
-colorscheme tender
-
-"" -----------------------------------------
-"" EmmetVim
-"" -----------------------------------------
-let g:user_emmet_settings = {
-	\ 'typescript'     : { 'extends' : 'jsx' },
-	\ 'javascript.jsx' : { 'extends' : 'jsx' }
-\ }
-
-"" -----------------------------------------
-"" EasyAlign
-"" -----------------------------------------
-xmap ga <Plug>(LiveEasyAlign)
-nmap ga <Plug>(LiveEasyAlign)
-
-"" -----------------------------------------
-"" vim-snippet
-"" -----------------------------------------
-let g:lsp_settings = {
-		\ 'gopls': {
-		\   'initialization_options': {
-		\     'usePlaceholders': v:true,
-		\   },
-		\ },
-		\ }
+""""" -----------------------------------------
+""""" Vim-fugitive
+""""" -----------------------------------------
+"""nnoremap <silent> <Leader>gb :Git blame<CR>
+"""nnoremap <silent> <Leader>gd :Gdiffsplit<CR>
+"""nnoremap <silent> <Leader>gl :Git log<CR>
+"""nnoremap <silent> <Leader>gs :Git status<CR>
+"""
+""""" -----------------------------------------
+""""" vim-lsp settings 各種機能のキーマッピング
+""""" -----------------------------------------
+"""function! s:on_lsp_buffer_enabled() abort
+"""	setlocal omnifunc=lsp#complete
+"""	setlocal signcolumn=yes
+"""	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+"""	nmap <buffer> gd <plug>(lsp-definition)
+"""	nmap <buffer> gr <plug>(lsp-references)
+"""	nmap <buffer> gi <plug>(lsp-implementation)
+"""	nmap <buffer> gt <plug>(lsp-type-definition)
+"""	nmap <buffer> <leader>rn <plug>(lsp-rename)
+"""	nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+"""	nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+"""	nmap <buffer> K <plug>(lsp-hover)
+"""endfunction
+"""
+"""augroup lsp_install
+"""	au!
+"""	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+"""augroup END
+"""
+"""nnoremap <Leader>lsp  :LspInstallServer<CR>
+"""nnoremap <Leader>lspm :LspManageServer<CR>
+"""
+""""" -----------------------------------------
+""""" Tender.vim
+""""" -----------------------------------------
+"""colorscheme tender
+"""
+""""" -----------------------------------------
+""""" EmmetVim
+""""" -----------------------------------------
+"""let g:user_emmet_settings = {
+"""	\ 'typescript'     : { 'extends' : 'jsx' },
+"""	\ 'javascript.jsx' : { 'extends' : 'jsx' }
+"""\ }
+"""
+""""" -----------------------------------------
+""""" EasyAlign
+""""" -----------------------------------------
+"""xmap ga <Plug>(LiveEasyAlign)
+"""nmap ga <Plug>(LiveEasyAlign)
+"""
+""""" -----------------------------------------
+""""" vim-snippet
+""""" -----------------------------------------
+"""let g:lsp_settings = {
+"""		\ 'gopls': {
+"""		\   'initialization_options': {
+"""		\     'usePlaceholders': v:true,
+"""		\   },
+"""		\ },
+"""		\ }
 
 "" -----------------------------------------
 "" vsnip
