@@ -121,7 +121,6 @@ nnoremap <Right> <C-w>l
 nnoremap <Left> <C-w>h
 nnoremap <Up> <C-w>k
 nnoremap <Down> <C-w>j
-nnoremap <silent> <C-[> :bnext<CR>
 nnoremap <silent> <C-]> :bprev<CR>
 
 "" -----------------------------------------
