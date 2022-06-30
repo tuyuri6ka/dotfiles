@@ -26,12 +26,13 @@ endif
 
 "" Install plugins
 call plug#begin(s:plugdir)
-	"" :LspManageServer → :LspInstallServer
+	"" 補完用Plugin
 	Plug 'prabirshrestha/vim-lsp'
 	Plug 'mattn/vim-lsp-settings'
-	"" lspから送られてきたsnippetをvimに渡す
-	Plug 'hrsh7th/vim-vsnip'
-	Plug 'hrsh7th/vim-vsnip-integ'
+	Plug 'prabirshrestha/asyncomplete.vim'
+	Plug 'prabirshrestha/asyncomplete-lsp.vim'
+	let g:lsp_async_completion = 1
+	let g:lsp_document_code_action_signs_enabled = 0
 
 	"" :Files
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -60,15 +61,6 @@ call plug#begin(s:plugdir)
 	Plug 'airblade/vim-gitgutter'
 
 	Plug 'sheerun/vim-polyglot'
-	"" 補完用Plugin
-	Plug 'Shougo/ddc.vim'
-	Plug 'shun/ddc-vim-lsp'
-	Plug 'vim-denops/denops.vim'
-	" Install your sources
-	Plug 'Shougo/ddc-around'
-	" Install your filters
-	Plug 'Shougo/ddc-matcher_head'
-	Plug 'Shougo/ddc-sorter_rank'
 
 call plug#end()
 
@@ -164,11 +156,6 @@ function! s:on_lsp_buffer_enabled() abort
 	nmap <buffer> K <plug>(lsp-hover)
 endfunction
 
-augroup lsp_install
-	au!
-	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
 nnoremap <Leader>lsp  :LspInstallServer<CR>
 nnoremap <Leader>lspm :LspManageServer<CR>
 
@@ -190,53 +177,6 @@ let g:user_emmet_settings = {
 "" -----------------------------------------
 xmap ga <Plug>(LiveEasyAlign)
 nmap ga <Plug>(LiveEasyAlign)
-
-"" -----------------------------------------
-"" vim-snippet
-"" -----------------------------------------
-let g:lsp_settings = {
-		\ 'gopls': {
-		\   'initialization_options': {
-		\     'usePlaceholders': v:true,
-		\   },
-		\ },
-		\ }
-
-"" -----------------------------------------
-"" vsnip
-"" -----------------------------------------
-" NOTE: You can use other key to expand snippet.
-
-" Expand
-imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-
-" Expand or jump
-imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-
-" Jump forward or backward
-imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-
-" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
-" See https://github.com/hrsh7th/vim-vsnip/pull/50
-nmap s <Plug>(vsnip-select-text)
-xmap s <Plug>(vsnip-select-text)
-nmap S <Plug>(vsnip-cut-text)
-xmap S <Plug>(vsnip-cut-text)
-
-" If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
-let g:vsnip_filetypes = {}
-let g:vsnip_filetypes.javascriptreact = ['javascript']
-let g:vsnip_filetypes.typescriptreact = ['typescript']
-
-" store snippet dir
-let g:vsnip_snippet_dir = '~/.dotfiles/dotfiles/.vsnip'
-
-nnoremap <Leader>snip :VsnipOpen
 
 "" -----------------------------------------
 "" Fzf.vim
@@ -266,57 +206,8 @@ highlight ConflictMarkerEND    guibg=#2f628e
 nnoremap <Leader>trim :FixWhitespace<CR>
 
 "" -----------------------------------------
-" ddc.vim
+" asyncomplete
 "" -----------------------------------------
-" Customize global settings
-" Use around source.
-" https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around', 'vim-lsp', 'vsnip'])
-
-" Change source options
-" Use matcher_head and sorter_rank.
-" https://github.com/Shougo/ddc-matcher_head
-" https://github.com/Shougo/ddc-sorter_rank
-call ddc#custom#patch_global('sourceOptions', {
-      \ '_': {
-      \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank']
-			\ },
-			\ 'around': {'mark': 'A'},
-			\ 'vsnip': {
-			\   'mark': 'vsnip',
-			\   'dup': v:true
-			\  },
-			\ 'vim-lsp': {
-			\   'mark': 'lsp',
-			\   'forceCompletionPattern': '\\.|:|->',
-			\   'minAutoCompleteLength': 1
-			\ },
-      \ })
-
-call ddc#custom#patch_global('sourceParams', {
-      \ 'around': {'maxSize': 500},
-      \ })
-
-" Customize settings on a filetype
-call ddc#custom#patch_filetype(['c', 'cpp'], 'sources', ['around', 'clangd'])
-call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
-      \ 'clangd': {'mark': 'C'},
-      \ })
-call ddc#custom#patch_filetype('markdown', 'sourceParams', {
-      \ 'around': {'maxSize': 100},
-      \ })
-
-" Mappings
-" <TAB>: completion.
-inoremap <silent><expr> <TAB>
-			\ ddc#map#pum_visible() ? '<C-n>' :
-			\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-			\ '<TAB>' : ddc#map#manual_complete()
-
-" <S-TAB>: completion back.
-inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
-
-" Use ddc.
-call ddc#enable()
-
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
