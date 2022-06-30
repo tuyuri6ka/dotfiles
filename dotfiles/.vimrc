@@ -4,10 +4,55 @@
 "" ----------------------------------------
 
 "" ----------------------------------------
+""	Configure Default Vim
+"" ----------------------------------------
+syntax on                      " make syntax visible
+filetype plugin indent on
+let mapleader="\<Space>" " shortcut trigger
+let $LANG='en_US.UTF-8'
+
+set autoread                   " if file changed outside vim. it alerms to reload or not
+set backspace=indent,eol,start " you can delete by backspace
+set belloff=all                " cut down bell
+set clipboard=unnamedplus      " copy and make it usable with any other platform
+set cursorcolumn               " hilighten cursor column
+
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,cp932,sjis,euc-jp,iso-2022-jp " detect all kind of file format
+
+set fileformats=unix,dos,mac   " detect break line automatically
+set hidden nobackup noswapfile " do not create swap file
+set hlsearch incsearch         " search in smart way
+set laststatus=2
+set lazyredraw                 " set not drawing each time of macro. it speeds up macro.
+
+set list
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set matchtime=1
+
+set mouse=a       " enable to use mouse
+set nobomb        " remove bom. bom is utf8 csv for excel because it needs to detect utf or not. It sometimes added by written by windows notepad.
+set number        " show line number
+set ruler showcmd " show status
+set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
+
+set shiftwidth=2
+set showmatch                           " show corresponding brackets
+set smartcase ignorecase wildignorecase " search in smart way
+set statusline=%F
+set tabstop=2
+set title titlestring=%F                " set as absolute path
+set whichwrap=b,s,h,l,<,>,[,]           " enable to go to next line with these symbol
+set wildmenu                            " menu completion
+
+autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
+
+
+"" ----------------------------------------
 "" Plugins
 "" ----------------------------------------
-"" Install vim-plug if not installed
-"" Make Directory for vim-plug
+"" Install vim-plug if not installed.  Make Directory for vim-plug
 let s:vimdir   = has('nvim') ? '~/.config/nvim/' : '~/.vim/'
 let s:plugdir  = s:vimdir . 'plugged'
 let s:plugfile = s:vimdir . 'autoload/plug.vim'
@@ -24,7 +69,9 @@ if empty(glob(s:plugfile))
 	autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
 endif
 
+"" -------------------------------------
 "" Install plugins
+"" -------------------------------------
 call plug#begin(s:plugdir)
 	"" 補完用Plugin
 	Plug 'prabirshrestha/vim-lsp'
@@ -38,72 +85,37 @@ call plug#begin(s:plugdir)
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 	Plug 'junegunn/fzf.vim'
 
-	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
-	Plug 'mattn/emmet-vim'
-	"" カラーコードをコード上でプレビューする
-	Plug 'ap/vim-css-color'
-	"" 閉じカッコを自動で保管してくれる
-	Plug 'cohama/lexima.vim'
+	"" 見た目周り
 	"" 見た目の色合いを調整
 	Plug 'jacoborus/tender.vim'
-	"" 選択範囲をgccで一括コメント
-	Plug 'tpope/vim-commentary'
-	"" カッコなどの編集に便利
-	Plug 'machakann/vim-sandwich'
-	Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'
-	"" 行揃に便利
-	Plug 'junegunn/vim-easy-align'
-	"" 末尾のwhitespaaceを表示。:FixWhiteSpaceで一括削除（:5,10Fixなどで行指定も可能）
-	Plug 'bronson/vim-trailing-whitespace'
-	Plug 'ConradIrwin/vim-bracketed-paste'
-	Plug 'tpope/vim-fugitive' | Plug 'rhysd/conflict-marker.vim'
+	"" カラーコードをコード上でプレビューする
+	Plug 'ap/vim-css-color'
 	"" 差分行をハイライト
 	Plug 'airblade/vim-gitgutter'
+	"" コンフリクトマーカーで色分け
+	Plug 'rhysd/conflict-marker.vim'
+	"" vimでGitを良い感じに使う
+	Plug 'tpope/vim-fugitive'
 
-	Plug 'sheerun/vim-polyglot'
+	"" 入力補助補
+	"" 末尾のwhitespaaceを表示。:FixWhiteSpaceで一括削除（:5,10Fixなどで行指定も可能）
+	Plug 'bronson/vim-trailing-whitespace'
+	"" 閉じカッコを自動で保管してくれる
+	Plug 'cohama/lexima.vim'
+	"" カッコなどの編集に便利
+	Plug 'machakann/vim-sandwich'
+	"" 爆速HTMLコーディング(divのあとに<Ctrl+Y>+, で変換)
+	Plug 'mattn/emmet-vim'
+	"" 選択範囲をgccで一括コメント
+	Plug 'tpope/vim-commentary'
+	Plug 'tpope/vim-surround'
+	Plug 'tpope/vim-repeat'
+	"" 行揃に便利
+	Plug 'junegunn/vim-easy-align'
 
+	Plug 'ConradIrwin/vim-bracketed-paste'
 call plug#end()
 
-"" ----------------------------------------
-""	Configure Default Vim
-"" ----------------------------------------
-let mapleader="\<Space>" " shortcut trigger
-"set clipboard=unnamedplus " copy and make it usable with any other platform
-set nocompatible " to use vim-polyglot
-set cursorcolumn " hilighten cursor column
-set fileformats=unix,dos,mac " detect break line automatically
-set hidden nobackup noswapfile " do not create swap file
-set laststatus=2
-set lazyredraw " set not drawing each time of macro. it speeds up macro.
-set list
-set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-set matchtime=1
-set mouse=a " enable to use mouse
-set nobomb " remove bom. bom is utf8 csv for excel because it needs to detect utf or not. It sometimes added by written by windows notepad.
-set noswapfile
-set number " show line number
-set rulerformat=%40(%1*%=%l,%-(%c%V%)\ %=%t%)%* " right bottom status format
-set showmatch " show corresponding brackets
-set smartcase ignorecase wildignorecase " search in smart way
-set splitright splitbelow " split in natural way
-set statusline=%F
-let $LANG='en_US.UTF-8'
-set title titlestring=%F " set as absolute path
-set whichwrap=b,s,h,l,<,>,[,] " enable to go to next line with these symbol
-set encoding=utf-8 fileencodings=utf-8,cp932,sjis,euc-jp,iso-2022-jp " detect all kind of file format
-
-autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " start at a line where you exit vim last time
-
-" nvimとvimで設定を変える
-syntax on " make syntax visible
-set ttyfast " scroll fast
-set autoread " if file changed outside vim. it alerms to reload or not
-set wildmenu " menu completion
-set belloff=all " cut down bell
-set ruler showcmd " show status
-set hlsearch incsearch " search in smart way
-filetype plugin indent on
-set backspace=indent,eol,start " you can delete by backspace
 
 "" ----------------------------------------
 "" Mapping
@@ -139,6 +151,12 @@ nnoremap <silent> <Leader>gl :Git log<CR>
 nnoremap <silent> <Leader>gs :Git status<CR>
 
 "" -----------------------------------------
+"" tender,vim
+ "" -----------------------------------------
+colorscheme tender
+set termguicolors
+
+"" -----------------------------------------
 "" vim-lsp settings 各種機能のキーマッピング
 "" -----------------------------------------
 function! s:on_lsp_buffer_enabled() abort
@@ -159,32 +177,19 @@ nnoremap <Leader>lsp  :LspInstallServer<CR>
 nnoremap <Leader>lspm :LspManageServer<CR>
 
 "" -----------------------------------------
-"" Tender.vim
+" VimTrailingWhiteSpace
 "" -----------------------------------------
-colorscheme tender
-
-"" -----------------------------------------
-"" EmmetVim
-"" -----------------------------------------
-let g:user_emmet_settings = {
-	\ 'typescript'     : { 'extends' : 'jsx' },
-	\ 'javascript.jsx' : { 'extends' : 'jsx' }
-\ }
+nnoremap <Leader>trim :FixWhitespace<CR>
 
 "" -----------------------------------------
 "" EasyAlign
 "" -----------------------------------------
-xmap ga <Plug>(LiveEasyAlign)
-nmap ga <Plug>(LiveEasyAlign)
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
 "" -----------------------------------------
 "" Fzf.vim
 "" -----------------------------------------
-" This is the default option:
-"   - Preview window on the right with 50% width
-"   - CTRL-/ will toggle preview window.
-" - Note that this array is passed as arguments to fzf#vim#with_preview function.
-" - To learn more about preview window options, see `--preview-window` section of `man fzf`.
 let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 nnoremap <Leader>fd :Files<CR>
 
@@ -200,13 +205,9 @@ highlight ConflictMarkerTheirs guibg=#344f69
 highlight ConflictMarkerEND    guibg=#2f628e
 
 "" -----------------------------------------
-" VimTrailingWhiteSpace
-"" -----------------------------------------
-nnoremap <Leader>trim :FixWhitespace<CR>
-
-"" -----------------------------------------
 " asyncomplete
 "" -----------------------------------------
+set completeopt=menuone
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
