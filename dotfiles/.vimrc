@@ -78,8 +78,13 @@ call plug#begin(s:plugdir)
 	Plug 'mattn/vim-lsp-settings'
 	Plug 'prabirshrestha/asyncomplete.vim'
 	Plug 'prabirshrestha/asyncomplete-lsp.vim'
+	Plug 'prabirshrestha/asyncomplete-emmet.vim'
 	let g:lsp_async_completion = 1
 	let g:lsp_document_code_action_signs_enabled = 0
+
+	"" lspから送られてきたsnippetをvimに渡す
+	Plug 'hrsh7th/vim-vsnip'
+	Plug 'hrsh7th/vim-vsnip-integ'
 
 	"" :Files
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -173,6 +178,11 @@ function! s:on_lsp_buffer_enabled() abort
 	nmap <buffer> K <plug>(lsp-hover)
 endfunction
 
+augroup lsp_install
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
 nnoremap <Leader>lsp  :LspInstallServer<CR>
 nnoremap <Leader>lspm :LspManageServer<CR>
 
@@ -211,3 +221,32 @@ set completeopt=menuone
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+" ============================================================
+"  FileTypeごとの設定
+" ============================================================
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
+    \ 'name': 'emmet',
+    \ 'whitelist': ['html'],
+    \ 'completor': function('asyncomplete#sources#emmet#completor'),
+    \ }))
+
+"" -----------------------------------------
+"" vim-snippet
+"" -----------------------------------------
+let g:lsp_settings = {
+		\ 'gopls': {
+		\   'initialization_options': {
+		\     'usePlaceholders': v:true,
+		\   },
+		\ },
+		\ }
+
+"" -----------------------------------------
+"" vsnip
+"" -----------------------------------------
+" NOTE: You can use other key to expand snippet.
+" store snippet dir
+let g:vsnip_snippet_dir = '~/.dotfiles/dotfiles/.vsnip'
+" regist snippet
+nnoremap <Leader>snip :VsnipOpen
