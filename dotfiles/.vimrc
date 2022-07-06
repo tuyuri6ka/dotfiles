@@ -14,7 +14,6 @@ let $LANG='en_US.UTF-8'
 set autoread                   " if file changed outside vim. it alerms to reload or not
 set backspace=indent,eol,start " you can delete by backspace
 set belloff=all                " cut down bell
-set clipboard=unnamedplus      " copy and make it usable with any other platform
 set cursorcolumn               " hilighten cursor column
 
 set encoding=utf-8
@@ -138,7 +137,10 @@ nnoremap <Right> <C-w>l
 nnoremap <Left> <C-w>h
 nnoremap <Up> <C-w>k
 nnoremap <Down> <C-w>j
-nnoremap <silent> <C-]> :bprev<CR>
+nnoremap <silent> <C-j> :bprev<CR>
+nnoremap <silent> <C-k> :bnext<CR>
+nnoremap <silent> <C-m> :tabN<CR>
+nnoremap <silent> <C-n> :tabn<CR>
 
 "" -----------------------------------------
 "" Vim-Plug
