@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 調査（シス）
+    about: みんなで調査・議論。実装担当決めは後回しでOK
+    url: https://github.com/tuyuri6ka/dotfiles/issues/new?template=research_sys.md&title=【調査】
+  - name: 設計（シス）
+    about: 実装に入る前に必ず設計を共有しよう
+    url: https://github.com/tuyuri6ka/dotfiles/issues/new?template=design_sys.md&title=【設計】
