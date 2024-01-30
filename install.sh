@@ -17,11 +17,22 @@ dotfiles_logo='
    \__,_|\___/ \__|_| |_|_|\___||___/
 '
 
+
+if [ -z "${MYHOME:-}" ]; then
+	MYHOME=$HOME/users/tuyuri6ka
+	export HOME=$MYHOME
+	export MYHOME
+fi
+
 # Set DOTPATH as default variable
 # -z: defined check
 if [ -z "${DOTPATH:-}" ]; then
-    DOTPATH=~/.dotfiles; export DOTPATH
+    DOTPATH=$HOME/dotfiles; export DOTPATH
 fi
+
+echo "MYHOME: ${MYHOME}"
+echo "HOME:   ${HOME}"
+echo "DOTPATH:${DOTPATH}"
 
 ## ----------------------------------------
 ##  Function
@@ -70,27 +81,8 @@ dotfiles_download () {
 	if is_exists "git"; then
 		git clone --recursive "$DOTFILES_GITHUB" "$DOTPATH"
 		e_success "git clone"
-
-	elif is_exists "curl" || is_exists "wget"; then
-		# curl or get
-		local tarball=""
-		if is_exists "curl"; then
-			curl -L "$tarball"
-			e_success "curl"
-		elif is_exists "wget"; then
-			curl -O - "$tarball"
-			e_success "wget"
-		fi | tar xvz ## pipe
-
-		if [ ! -d dotfiles-master ]; then
-			e_error "dotfiles-master: not found"
-			exit 1
-		fi
-
-		echo "command"
-		command mv -f dotfiles-master "$DOTPATH"
 	else
-		e_error "Sorry. Please install curl or wget..."
+		e_error "Sorry. Please install git..."
 		exit 1
 	fi
 
@@ -101,46 +93,27 @@ dotfiles_symlink () {
 	e_newline
 	e_header "Make symbolic link for dotfiles..."
 
-	CWD=$DOTPATH/dotfiles
+	CWD=$DOTPATH
 	if [ ! -d "$CWD" ]; then
 		e_error "$CWD: not found"
 		exit 1
 	fi
 
-	cd $DOTPATH
-	handle_symlink_from_path() {
-		file=$1
-		dirpath=$(dirname "${file}") && filename=$(basename "${file}")
-		abspath=$(cd "${dirpath}" && pwd)"/${filename}"
-		relpath=$(echo "${file}" | sed "s|^\./dotfiles/||")
-		target="${HOME}/${relpath}"
-		mkdir -p "$(dirname "${target}")"
-		ln -sfnv "${abspath}" "${target}"
-	}
-	export -f handle_symlink_from_path
+	if ! is_exists "realpath"; then
+		e_error "Sorry. Please install realpath..."
+		exit 1
+	fi
 
-	bulk_symlink_target=(
-		"./dotfiles/.aliases"
-		"./dotfiles/.git_template"
-	)
+	cd $DOTPATH/dotfiles
+	dot_list=$(ls -a | xargs realpath | grep -v "dotfiles$" | sort)
 
-	find_exclude=""
-	for i in "${bulk_symlink_target[@]}"; do
-		handle_symlink_from_path "${i}"
-		find_exclude="${find_exclude} -path \"${i}\" -prune -or "
+	cd $HOME
+	for abspath in ${dot_list}; do
+		relpath=$(basename ${abspath})
+		ln -sfnv "${abspath}" "${relpath}"
 	done
-	find_command="find ./dotfiles ${find_exclude} \( -type l -or -type f \) -exec bash -c 'handle_symlink_from_path \"{}\"' \;"
-	eval "${find_command}" && e_done "Make symbolic link for dotfiles"
-}
 
-setup_env () {
-	e_newline
-	e_header "Setup environment..."
-
-	sudo apt update && e_success "apt update"
-	sudo apt install zsh && e_success "zsh install"
-
-	e_newline && e_done "Initialize"
+	e_done "Make symbolic link for dotfiles"
 }
 
 install_bundles() {
@@ -161,38 +134,27 @@ dotfiles_clean () {
 	e_newline
 	e_header "Dotfiles symbolic link delete..."
 
-	CWD=$DOTPATH/dotfiles
+	CWD=$DOTPATH
 	if [ ! -d "$CWD" ]; then
 		e_error "$CWD: not found"
 		exit 1
 	fi
 
-	cd $DOTPATH
-	handle_symlink_from_path() {
-		file=$1
-		dirpath=$(dirname "${file}") && filename=$(basename "${file}")
-		abspath=$(cd "${dirpath}" && pwd)"/${filename}"
-		relpath=$(echo "${file}" | sed "s|^\./dotfiles/||")
-		target="${HOME}/${relpath}"
-		mkdir -p "$(dirname "${target}")"
-		unlink "${target}"
-	}
-	export -f handle_symlink_from_path
+	if ! is_exists "realpath"; then
+		e_error "Sorry. Please install realpath..."
+		exit 1
+	fi
 
-	bulk_symlink_target=(
-		"./dotfiles/.aliases"
-		"./dotfiles/.git_template"
-	)
+	cd $DOTPATH/dotfiles
+	dot_list=$(ls -a | xargs realpath | grep -v "dotfiles$" | sort)
 
-	find_exclude=""
-	for i in "${bulk_symlink_target[@]}"; do
-		handle_symlink_from_path "${i}"
-		find_exclude="${find_exclude} -path \"${i}\" -prune -or "
+	cd $HOME
+	for abspath in ${dot_list}; do
+		relpath=$(basename ${abspath})
+		unlink "${relpath}"
 	done
-	find_command="find ./dotfiles ${find_exclude} \( -type l -or -type f \) -exec bash -c 'handle_symlink_from_path \"{}\"' \;"
-	eval "${find_command}" && e_newline && e_done "Dotfiles symbolic link delete"
 
-	e_warning ".dotfiles direcotry is left. If needed, please delete .dotfiles directory."
+	e_warning "dotfiles direcotry is left. If needed, please delete .dotfiles directory."
 }
 
 usage() {
@@ -206,7 +168,6 @@ usage() {
   =================================================
    --download: Download git repository and make ~/.dotfiles dir
    --dotfiles: Make symbolic link from ~/.dotfiles to your home dir
-   --setup_env: Core Initilaization
    --bundles: Install bundles for various usefull tools
    --clean: Remove dotfiles symbolic link
    --all: All installations (except init)"
@@ -224,7 +185,6 @@ echo "$dotfiles_logo"
 if [[ $# -eq 0 ]]; then
 	dotfiles_download &&
 	dotfiles_symlink &&
-	setup_env &&
 	install_bundles
 	exit 0
 fi
@@ -241,7 +201,6 @@ for opt in ${args[@]}; do
 		--help) usage ;;
 		--download) dotfiles_download ;;
 		--dotfiles) dotfiles_symlink ;;
-		--setup_env) setup_env ;;
 		--bundles) install_bundles ;;
 		--clean) dotfiles_clean ;;
 		--all)
@@ -252,8 +211,6 @@ for opt in ${args[@]}; do
 			# ==> deploying
 			dotfiles_symlink &&
 			# Basic tool install and setting
-			# ==> setup enviroment
-			setup_env &&
 			# Execute all sh files within bundles
 			# ==> install usefull tools
 			install_bundles
