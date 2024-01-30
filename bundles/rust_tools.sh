@@ -8,7 +8,7 @@ brew install bat
 brew install eza
 brew install procs
 brew install dust
-brew install fd-find
+brew install fd
 brew install ripgrep
 brew install hyperfine
 brew install cargo-outdated
