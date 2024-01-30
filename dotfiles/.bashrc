@@ -2,7 +2,10 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-export PATH=$HOME/.cargo/bin:$PATH
+# フォルダ準備
+export HOME=$HOME/users/tuyuri6ka
+export PATH=$HOME:$PATH
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 zsh
 

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+brew install fzf
 
