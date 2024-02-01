@@ -105,8 +105,7 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 
 [commit]
 	# commit 時に使用するテンプレート文を指定する
-	# template = ~/.git_template/commit-template/commit-template
-	template = ~/.git_template/commit-template/commit-message
+	template = ~/.git_template/commit-template/commit-template
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
