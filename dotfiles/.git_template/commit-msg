@@ -1,7 +1,8 @@
 #!/bin/zsh
 
+# commit メッセージを保存した際に回すスクリプト群を叩く
 message=`cat $1`
-~/.git_template/hooks/check-commit-msg ${message} || ERR=1
+~/.git_template/hooks/scripts/commit-msg/check-commit-msg ${message} || ERR=1
 
 if [[ $ERR -ne 0 ]]; then
 	echo

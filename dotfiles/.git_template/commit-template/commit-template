@@ -1,0 +1,24 @@
+
+# ==== Message Prefix ====
+# Add
+# Delete
+# Feature
+# Fix
+# Change
+# Refactor
+# Update
+# Doc
+# Merge
+# Initial Commit
+#
+# ==== Title Format ====
+# Task: Subject or Explain what/why/why not
+#
+# note:   note, #issue No, Qiita/Zen or other references.
+# branch: branch name
+#
+# ==== Rules ====
+# 1. Task Name begins with the capital letter.
+# 2. First line must be less than 50 characters.
+# 3. Never blank body.
+# 4. Explain it in detail that even kids can understand.

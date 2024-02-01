@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git_root=$HOME/.git_template;
+
+# pre-commit 時に回すスクリプト群を叩きにいく
+for hook in `find ${git_root}/hooks/scripts/pre-commit/ -maxdepth 1 -type f`
+do
+  $hook
+    if [ $? != 0 ]; then
+      exit 1;
+    fi
+done
