@@ -1,0 +1,15 @@
+#!/bin/bash
+# ブランチ名を commit message 内に埋め込むスクリプト
+
+# ブランチ名取得
+branch=$(git branch | grep ^* | sed 's/\* //g')
+
+# first commit前等で、ブランチ名が取れなかった時用
+if [ ! $branch ]; then branch='master'; fi
+
+# git commit 時にエディタ起動した場合にのみ、ブランチ名を出力する
+if [ "$2" == "message" ]; then
+	printf "$(cat $1)\n\nnote: \nbranch: ${branch}\n" > $1
+else
+	printf "\n\nnote: \nbranch: ${branch}\n$(cat $1)" > $1
+fi
