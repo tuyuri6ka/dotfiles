@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 commit_message=$1
-local REGEX='^(Add:|Delete:|Feature:|Fix:|Refactor:|Update:|Doc:)(\S|\s)+.?|^Merge|^Initial Commit'
+local REGEX='^(Add:|Delete:|Feature:|Fix:|Change:|Refactor:|Update:|Doc:)(\S|\s)+.?|^Merge|^Initial Commit'
 is_confirm=`echo $commit_message | grep -E "$REGEX"`
 
 if [[ ! $is_confirm ]]; then
