@@ -1,0 +1,26 @@
+#!/bin/bash
+
+git_root=$HOME/.git_templates;
+
+# push 前に回したいスクリプト群を叩く
+for hook in `find ${git_root}/hooks/scripts/pre-push/ -maxdepth 1 -type f`
+do
+	$hook
+	if [ $? != 0 ]; then
+		exit 1;
+	fi
+done
+
+# only master branch
+branch="$(git symbolic-ref HEAD 2>/dev/null)" || \
+	"$(git describe --contains --all HEAD)"
+
+if [ "${branch##refs/heads/}" = "master" ]; then
+	for hook in `find ${git_root}/hooks/scripts/pre-push/master -maxdepth 1 -type f`
+	do
+		$hook
+		if [ $? != 0 ]; then
+			exit 1;
+		fi
+	done
+fi
