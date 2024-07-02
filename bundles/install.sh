@@ -37,12 +37,11 @@ e_header "Bundles install start."
 # install するものはファイルを用意し、ここにファイルを追加する。
 e_install "brew.sh"
 e_install "zsh.sh"
-e_install "vim.sh"
 e_install "rust_tools.sh"
 e_install "deno.sh"
 e_install "fzf.sh"
 e_install "zinit.sh"
 e_install "vim-plug.sh"
-e_install "powerlevel-10k.sh"
+e_install "vim.sh"
 
 e_done "Bundled install"
