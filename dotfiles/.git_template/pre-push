@@ -1,6 +1,6 @@
 #!/bin/bash
 
-git_root=$HOME/.git_templates;
+git_root=$HOME/.git_template;
 
 # push 前に回したいスクリプト群を叩く
 for hook in `find ${git_root}/hooks/scripts/pre-push/ -maxdepth 1 -type f`

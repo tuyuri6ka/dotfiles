@@ -1,8 +1,11 @@
-#!/bin/zsh
+#!/bin/bash
 
 # commit メッセージを保存した際に回すスクリプト群を叩く
-message=`cat $1`
-~/.git_template/hooks/scripts/commit-msg/check-commit-msg ${message} || ERR=1
+# 変数$1には最新のコミットメッセージが書かれているファイルのパス.git/COMMIT_EDITMSGが代入されている
+# その中身を "" で括ってスクリプトに渡している。
+# "" で括るのは commit-msg の改行や空白が複数の引数として扱われないようにするため。
+message="$(cat "$1")"
+~/.git_template/hooks/scripts/commit-msg/check-commit-msg "${message}" || ERR=1
 
 if [[ $ERR -ne 0 ]]; then
 	echo

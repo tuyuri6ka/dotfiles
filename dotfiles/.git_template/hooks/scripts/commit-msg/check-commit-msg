@@ -1,16 +1,56 @@
-#!/bin/zsh
+#!/bin/bash
+## 参考：https://qiita.com/MasaoSasaki/items/f10ab4cd54e228fb436f
 
-commit_message=$1
-local REGEX='^(Add:|Delete:|Feature:|Fix:|Change:|Refactor:|Update:|Doc:)(\S|\s)+.?|^Merge|^Initial Commit'
-is_confirm=`echo $commit_message | grep -E "$REGEX"`
+# 色設定を読み込む
+source $HOME/.color_conf
 
-if [[ ! $is_confirm ]]; then
-	echo "Your commit message doesn't match pattern. Follow the pattern below."
-	echo ""
-	echo "REGEX Pattern(Type): $REGEX"
-	echo ""
-	echo "1. <Type: Task Name>"
-	echo "2."
-	echo "3. <Body: What you cared and how you've changed.>"
-	exit 1
+# コミットメッセージを定義：引数に commit-msg の中身が丸ごと渡されてくる
+MSG=$1
+readonly MSG
+# 終了コードを定義。0: OK, 1: NG
+code=0
+
+printf "${BOLD}${WHITE}🪝 Running Git Hooks: commit-msg${RESET}${LF}"
+
+# Prefixの存在チェック
+printf "${WHITE} - Prefixの存在チェック: ${RESET}${LF}"
+## 必要なPrefixを定義
+readonly CORRECT_PREFIXES=("Add" "Delete" "Feature" "Fix" "Change" "Refactor" "Update" "Merge" "Initial Commit")
+## 各要素に": "を追加
+for i in "${!CORRECT_PREFIXES[@]}"; do
+  correct_prefixes[i]="${CORRECT_PREFIXES[i]}: "
+done
+
+## `grep -E`で配列からOR検索をするため、半角スペース(" ")の区切り文字をパイプ("|")に変更
+prefixes="$(
+  IFS="|"
+  echo "${correct_prefixes[*]}"
+)"
+
+if ! echo "$MSG" | grep -Eq "${prefixes}"; then
+  printf  "${BOLD}${RED}NG${LF}"
+  printf "================================================================${LF}"
+  printf "コミットメッセージにPrefixが含まれていません。${LF}"
+  printf "${LF}"
+  printf "Prefix${LF}"
+  printf "  ${correct_prefixes[*]}${LF}"
+	printf "${LF}"
+	printf "1. <Type: Task Name>${LF}"
+	printf "2.${LF}"
+	printf "3. <Body: What you cared and how you've changed.>${LF}"
+  printf "================================================================${RESET}${LF}"
+  code=1
+else
+  printf "${BOLD}${GREEN}OK${RESET}${LF}"
 fi
+
+# 終了宣言
+if [ ${code} -eq 0 ]; then
+  echo ""
+  echo -e "${BOLD}${GREN}✨ALL PASS!!${RESET}${LF}"
+else
+  echo ""
+  echo -e "${BOLD}${RED}Git Hooks: commit-msg: NG${RESET}${LF}"
+fi
+
+exit ${code}
