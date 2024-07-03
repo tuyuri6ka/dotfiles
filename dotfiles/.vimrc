@@ -51,27 +51,24 @@ autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "norm
 "" ----------------------------------------
 "" Plugins
 "" ----------------------------------------
-"" Install vim-plug if not installed.  Make Directory for vim-plug
-let s:vimdir   = has('nvim') ? '~/.config/nvim/' : '~/.vim/'
-let s:plugdir  = s:vimdir . 'plugged'
-let s:plugfile = s:vimdir . 'autoload/plug.vim'
-let s:plugurl  = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-if empty(glob(s:plugfile))
-  silent execute '!mkdir -p ' . s:vimdir . 'autoload'
-  if executable('curl')
-    silent execute '!curl -sLo ' . s:plugfile ' ' . s:plugurl
-  elseif executable('wget')
-		silent execute '!wget -q -O ' . s:plugfile ' ' . s:plugurl
-  else
-		silent !echo 'vim-plug install failed: you need either wget or curl'
-  endif
-	autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
+"" vim-plug がインストールされていなかったらインストールする
+"" 二度目以降はインストールされないように処理分けしている
+let s:vimdir  = has('nvim') ? '~/.config/nvim/' : '~/.vim/'
+let s:plugdir = has('nvim') ? '${XDG_DATA_HOME:-$HOME/.local/share}' : '~/.vim/autoload/plug.vim'
+let s:plugurl = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+if empty(glob(s:plugdir))
+	if executable('curl')
+			silent execute '!curl -sLo ' . s:plugdir . ' --create-dirs ' . s:plugurl
+			autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
+	else
+			silent !echo 'vim-plug install failed: you need curl'
+	endif
 endif
 
 "" -------------------------------------
 "" Install plugins
 "" -------------------------------------
-call plug#begin(s:plugdir)
+call plug#begin()
 	"" 補完用Plugin
 	Plug 'prabirshrestha/vim-lsp'
 	Plug 'mattn/vim-lsp-settings'
