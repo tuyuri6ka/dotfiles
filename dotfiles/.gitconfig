@@ -52,9 +52,6 @@ sp  = !git stash pop `git stash list | awk -F':' '{print $1}' | fzf --preview 'g
 ## git settings
 ## ---------------------
 [pager]
-	diff = nkf -w -x | less
-	show = nkf -w -x | less
-	log  = nkf -w -x | less
 	line-numbers = true
 ## ---------------------
 
