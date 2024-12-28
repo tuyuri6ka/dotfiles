@@ -87,33 +87,20 @@ alias -g X='| xargs'
 alias -g C='| wc -l'
 alias -g L='| less S'
 
-alias vi='vi'
-alias vim='vim'
-alias weather='curl -Acurl wttr.in/Tokyo'
-
 alias g='git' && compdef _git g
 alias cdg='cd `git rev-parse --show-toplevel`'
-
-function tz()   { tar -zcvf ${1}.tar.gz ${1}; }
-function absp() { echo $(cd $(dirname "$0") && pwd -P)/$(basename "$1"); }
-function lnsv() { # enhancement of ln
-	[ -z "$2" ] && echo "Specify Target" && return 0;
-	abspath=$(absp $1);
-	ln -sfnv "${abspath}" "$2";
-}
 
 ## ----------------------------------------
 ## 外部ツール Alias & Function
 ## ----------------------------------------
 alias hf='hyperfine --max-runs 3'
-alias rg='rg --hidden -g "!.git" -g "!node_modules" --max-columns 200' rgi='rg -i'
+alias rg='rg --sort-files --hidden -g "!.git" -g "!node_modules" --ignore-case --max-columns 200' rgi='rg -i' rge='rg --encoding shift_jis'
 alias bat='bat --color=always --style=header,grid'
 alias dus='dust -pr -d 2 -X ".git" -X "node_modules"'
 alias psa='ps aux' pskl='psa | fzf | awk "{ print \$2 }" | xargs kill -9'
 alias fd='fd -iH --no-ignore-vcs -E ".git|node_modules"' rmds='fd .DS_Store -X rm'
 alias ll='eza -alhF --group-directories-first --time-style=long-iso --ignore-glob=".git|node_modules"'
-alias tr2='ll -T -L=2'
-alias tr3='ll -T -L=3'
+alias tr2='ll -T -L=2' tr3='ll -T -L=3'
 
 function fdsd() { fd "$1" | xargs sd "$2" "$3"; }
 function rgr()  { rg --files-with-matches "$1" | xargs sd "$1" "$2"; }
@@ -128,11 +115,62 @@ function rgf()  {
 ## ----------------------------------------
 ##	FZF
 ## ----------------------------------------
-export ENHANCD_FILTER=fzf;
-export ENHANCD_COMMAND=ecd
-export FZF_DEFAULT_COMMAND="rg --files"
-export FZF_DEFAULT_OPTS='--reverse --color fg:-1,bg:-1,hl:230,fg+:3,bg+:233,hl+:229 --color info:150,prompt:110,spinner:150,pointer:167,marker:174'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='fd --type f --color=always'
+#export FZF_DEFAULT_COMMAND="rg --files"
+export FZF_DEFAULT_OPTS='--ansi'
+#export FZF_DEFAULT_OPTS='--reverse --color fg:-1,bg:-1,hl:230,fg+:3,bg+:233,hl+:229 --color info:150,prompt:110,spinner:150,pointer:167,marker:174'
+export FZF_CTRL_T_COMMAND='fd --type f'
+export FZF_ALT_C_COMMAND='fd --type d'
+alias fin='fzf'
+alias vi='vim $(fzf)'
+alias lf='ls | fzf --preview "cat {}"'
+alias his='history | fzf'
+
+
+# fbr - checkout git branch
+function gcl() {
+	local branches branch
+	branches=$(git --no-pager branch -vv) &&
+	branch=$(echo "$branches" \| fzf +m) &&
+	git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+# fco - checkout git branch/tag
+function gcr() {
+	local tags branches target
+	branches=$(
+		git --no-pager branch --all \
+			--format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+		| sed '/^$/d') || return
+	tags=$(
+		git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+	target=$(
+		(echo "$branches"; echo "$tags") | grep "origin" |
+		fzf --no-hscroll --no-multi -n 2 \
+				--ansi) || return
+	git checkout $(awk -F 'origin/' '{print $2}' <<<"$target" )
+}
+
+function ecd() {
+	if [[ "$#" != 0 ]]; then
+		builtin cd "$@";
+		return
+	fi
+	while true; do
+		local lsd=$(echo ".." && ls -p | grep '/$' | sed 's;/$;;')
+		local dir="$(printf '%s\n' "${lsd[@]}" |
+			fzf --reverse --preview '
+			__cd_nxt="$(echo {})";
+			__cd_path="$(echo $(pwd)/${__cd_nxt} | sed "s;//;/;")";
+			echo $__cd_path;
+			echo;
+			ls -p --color=always "${__cd_path}";
+		')"
+		[[ ${#dir} != 0 ]] || return 0
+		builtin cd "$dir" &> /dev/null
+	done
+}
 
 ## ----------------------------------------
 ##	Zinit
@@ -150,20 +188,6 @@ zinit load zdharma-continuum/history-search-multi-word
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit load babarot/enhancd;
-
-# Zinit snnipet: 既存の alias 設定などを上書きしてしまうのでコメントアウト
-# 各種参考になる書き方はある
-# zinit snippet https://gist.githubusercontent.com/hightemp/5071909/raw/
-
-# Default:
-#  Load a few important annexes, without Turbo
-#  (this is currently required for annexes)
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
 
 # End of Zinit's installer chunk
 source $HOME/.local/share/zinit/plugins/romkatv---powerlevel10k/powerlevel10k.zsh-theme

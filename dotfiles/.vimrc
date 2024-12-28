@@ -72,22 +72,15 @@ endif
 "" Install plugins
 "" -------------------------------------
 call plug#begin(s:plugdir)
+	" LSP
+	" winget install rustlang.rustup
+	" winget install OpenJS.NodeJS.LTS
 	"" 補完用Plugin
 	Plug 'prabirshrestha/vim-lsp'
 	Plug 'mattn/vim-lsp-settings'
 	Plug 'prabirshrestha/asyncomplete.vim'
 	Plug 'prabirshrestha/asyncomplete-lsp.vim'
 	Plug 'prabirshrestha/asyncomplete-emmet.vim'
-	let g:lsp_async_completion = 1
-	let g:lsp_document_code_action_signs_enabled = 0
-
-	"" lspから送られてきたsnippetをvimに渡す
-	Plug 'hrsh7th/vim-vsnip'
-	Plug 'hrsh7th/vim-vsnip-integ'
-
-	"" :Files
-	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-	Plug 'junegunn/fzf.vim'
 
 	"" 見た目周り
 	"" 見た目の色合いを調整
@@ -98,8 +91,6 @@ call plug#begin(s:plugdir)
 	Plug 'airblade/vim-gitgutter'
 	"" コンフリクトマーカーで色分け
 	Plug 'rhysd/conflict-marker.vim'
-	"" vimでGitを良い感じに使う
-	Plug 'tpope/vim-fugitive'
 
 	"" 入力補助補
 	"" 末尾のwhitespaaceを表示。:FixWhiteSpaceで一括削除（:5,10Fixなどで行指定も可能）
@@ -150,43 +141,10 @@ nnoremap <Leader>update  :PlugUpdate<CR>
 nnoremap <Leader>install :PlugInstall<CR>
 
 "" -----------------------------------------
-"" Vim-fugitive
-"" -----------------------------------------
-nnoremap <silent> <Leader>gb :Git blame<CR>
-nnoremap <silent> <Leader>gd :Gdiffsplit<CR>
-nnoremap <silent> <Leader>gl :Git log<CR>
-nnoremap <silent> <Leader>gs :Git status<CR>
-
-"" -----------------------------------------
 "" tender,vim
  "" -----------------------------------------
 colorscheme tender
 set termguicolors
-
-"" -----------------------------------------
-"" vim-lsp settings 各種機能のキーマッピング
-"" -----------------------------------------
-function! s:on_lsp_buffer_enabled() abort
-	setlocal omnifunc=lsp#complete
-	setlocal signcolumn=yes
-	if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-	nmap <buffer> gd <plug>(lsp-definition)
-	nmap <buffer> gr <plug>(lsp-references)
-	nmap <buffer> gi <plug>(lsp-implementation)
-	nmap <buffer> gt <plug>(lsp-type-definition)
-	nmap <buffer> <leader>rn <plug>(lsp-rename)
-	nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-	nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-	nmap <buffer> K <plug>(lsp-hover)
-endfunction
-
-augroup lsp_install
-	au!
-	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-nnoremap <Leader>lsp  :LspInstallServer<CR>
-nnoremap <Leader>lspm :LspManageServer<CR>
 
 "" -----------------------------------------
 " VimTrailingWhiteSpace
@@ -198,12 +156,6 @@ nnoremap <Leader>trim :FixWhitespace<CR>
 "" -----------------------------------------
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
-
-"" -----------------------------------------
-"" Fzf.vim
-"" -----------------------------------------
-let g:fzf_preview_window = ['right:50%', 'ctrl-/']
-nnoremap <Leader>fd :Files<CR>
 
 "" -----------------------------------------
 "" ConflictMarker
@@ -223,32 +175,16 @@ set completeopt=menuone
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+let g:asymcomplete#config = {
+	\ 'backspace_delete_completion': 0,
+	\ 'enable_auto_completion': 1
+	\ }
 
 " ============================================================
 "  FileTypeごとの設定
 " ============================================================
 au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
-    \ 'name': 'emmet',
-    \ 'whitelist': ['html'],
-    \ 'completor': function('asyncomplete#sources#emmet#completor'),
-    \ }))
-
-"" -----------------------------------------
-"" vim-snippet
-"" -----------------------------------------
-let g:lsp_settings = {
-		\ 'gopls': {
-		\   'initialization_options': {
-		\     'usePlaceholders': v:true,
-		\   },
-		\ },
-		\ }
-
-"" -----------------------------------------
-"" vsnip
-"" -----------------------------------------
-" NOTE: You can use other key to expand snippet.
-" store snippet dir
-let g:vsnip_snippet_dir = '~/.dotfiles/dotfiles/.vsnip'
-" regist snippet
-nnoremap <Leader>snip :VsnipOpen
+	\ 'name': 'emmet',
+	\ 'whitelist': ['html'],
+	\ 'completor': function('asyncomplete#sources#emmet#completor'),
+	\ }))
