@@ -132,8 +132,8 @@ alias his='history | fzf'
 function gcl() {
 	local branches branch
 	branches=$(git --no-pager branch -vv) &&
-	branch=$(echo "$branches" \| fzf +m) &&
-	git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+	branch=$(echo "$branches" | fzf +m) &&
+	git checkout $(echo "$branch" | awk '{print $0}' | sed "s/.* //")
 }
 
 # fco - checkout git branch/tag
